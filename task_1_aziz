@@ -1,0 +1,47 @@
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+
+# File paths to your images
+image1_path = 'F:/Test Input Images/Test Input Images/300x450/1.jpg'
+image2_path = 'F:/Test Input Images/Test Input Images/300x450/4.jpg'
+image3_path = 'F:/Test Input Images/Test Input Images/300x200/1.jpg'
+
+
+# Read the images
+image1 = cv2.imread(image1_path, cv2.IMREAD_GRAYSCALE)
+image2 = cv2.imread(image2_path, cv2.IMREAD_GRAYSCALE)
+image3 = cv2.imread(image3_path, cv2.IMREAD_COLOR)
+
+
+# Global Thresholding (Otsu's Method)
+_, global_thresh1 = cv2.threshold(image1, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
+#_, global_thresh2 = cv2.threshold(image2, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
+
+# Local Thresholding (Adaptive Thresholding)
+local_thresh1 = cv2.adaptiveThreshold(image1, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 11, 2)
+#local_thresh2 = cv2.adaptiveThreshold(image2, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 11, 2)
+
+# Apply Gaussian blur to the first image
+low_pass = cv2.GaussianBlur(image1, (15, 15), 0)
+
+# Apply Laplacian filter to the second image
+high_pass = cv2.subtract(image2, cv2.GaussianBlur(image2, (15, 15), 0))
+
+# Combine the images to create the hybrid image
+hybrid_image = cv2.add(low_pass, high_pass)
+
+# Convert to Gray Scale
+colorToGrayScale = cv2.cvtColor(image3, cv2.COLOR_BGR2GRAY)
+
+
+# Display the results
+cv2.imshow('Global Thresholding Image 1', global_thresh1)
+cv2.imshow('Local Thresholding Image 1', local_thresh1)
+cv2.imshow('Low pass filter Image 1', low_pass)
+cv2.imshow('High pass filter Image 2', high_pass)
+cv2.imshow('Hybrid Image', hybrid_image)
+cv2.imshow('Color to Gray Scale',colorToGrayScale)
+
+cv2.waitKey(0)
+cv2.destroyAllWindows()
