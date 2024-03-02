@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1276</width>
-    <height>727</height>
+    <width>1148</width>
+    <height>949</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,8 +17,8 @@
    <widget class="QWidget" name="gridLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>300</x>
-      <y>120</y>
+      <x>20</x>
+      <y>20</y>
       <width>891</width>
       <height>451</height>
      </rect>
@@ -29,8 +29,8 @@
        <property name="enabled">
         <bool>true</bool>
        </property>
-       <property name="styleSheet">
-        <string notr="true">background-color: rgb(0, 0, 122);</string>
+       <property name="accessibleName">
+        <string/>
        </property>
        <property name="currentIndex">
         <number>0</number>
@@ -84,27 +84,96 @@
          <property name="geometry">
           <rect>
            <x>20</x>
-           <y>70</y>
+           <y>30</y>
            <width>121</width>
-           <height>41</height>
+           <height>81</height>
           </rect>
          </property>
          <property name="text">
           <string>Load Image</string>
          </property>
         </widget>
+        <widget class="QLabel" name="label">
+         <property name="geometry">
+          <rect>
+           <x>30</x>
+           <y>140</y>
+           <width>71</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Name:</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_2">
+         <property name="geometry">
+          <rect>
+           <x>30</x>
+           <y>170</y>
+           <width>71</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Size:</string>
+         </property>
+        </widget>
         <widget class="QGroupBox" name="groupBox">
          <property name="geometry">
           <rect>
-           <x>40</x>
-           <y>290</y>
+           <x>30</x>
+           <y>280</y>
            <width>751</width>
-           <height>101</height>
+           <height>111</height>
           </rect>
          </property>
          <property name="title">
           <string>Filter Setting</string>
          </property>
+         <widget class="QWidget" name="horizontalLayoutWidget">
+          <property name="geometry">
+           <rect>
+            <x>20</x>
+            <y>40</y>
+            <width>311</width>
+            <height>41</height>
+           </rect>
+          </property>
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <item>
+            <widget class="QLabel" name="label_3">
+             <property name="text">
+              <string>Select Filter</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="comboBox">
+             <item>
+              <property name="text">
+               <string>gussion</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>uniform</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>salt</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>pepper-nois</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+          </layout>
+         </widget>
          <widget class="QGroupBox" name="groupBox_2">
           <property name="geometry">
            <rect>
@@ -119,31 +188,45 @@
           </property>
           <widget class="QTextEdit" name="KernelSize">
            <property name="enabled">
-            <bool>false</bool>
+            <bool>true</bool>
            </property>
            <property name="geometry">
             <rect>
-             <x>10</x>
+             <x>0</x>
              <y>30</y>
-             <width>81</width>
-             <height>31</height>
+             <width>71</width>
+             <height>41</height>
             </rect>
            </property>
            <property name="toolTip">
             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Window Size&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
+           <property name="html">
+            <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:7.8pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
           </widget>
           <widget class="QTextEdit" name="Std">
            <property name="enabled">
-            <bool>false</bool>
+            <bool>true</bool>
            </property>
            <property name="geometry">
             <rect>
              <x>100</x>
              <y>30</y>
              <width>71</width>
-             <height>31</height>
+             <height>41</height>
             </rect>
+           </property>
+           <property name="html">
+            <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:7.8pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
           </widget>
           <widget class="QPushButton" name="filterBtn">
@@ -155,36 +238,13 @@
              <x>210</x>
              <y>30</y>
              <width>111</width>
-             <height>31</height>
+             <height>41</height>
             </rect>
            </property>
            <property name="text">
             <string>Filter</string>
            </property>
           </widget>
-         </widget>
-         <widget class="QLabel" name="label_3">
-          <property name="geometry">
-           <rect>
-            <x>21</x>
-            <y>41</y>
-            <width>68</width>
-            <height>16</height>
-           </rect>
-          </property>
-          <property name="text">
-           <string>Select Filter</string>
-          </property>
-         </widget>
-         <widget class="QComboBox" name="comboBox">
-          <property name="geometry">
-           <rect>
-            <x>179</x>
-            <y>49</y>
-            <width>73</width>
-            <height>22</height>
-           </rect>
-          </property>
          </widget>
         </widget>
        </widget>
@@ -211,13 +271,39 @@
           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
          </property>
         </widget>
+        <widget class="QLabel" name="label_4">
+         <property name="geometry">
+          <rect>
+           <x>30</x>
+           <y>140</y>
+           <width>71</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Name:</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_5">
+         <property name="geometry">
+          <rect>
+           <x>30</x>
+           <y>170</y>
+           <width>71</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Size:</string>
+         </property>
+        </widget>
         <widget class="QPushButton" name="pushButton_lines_load">
          <property name="geometry">
           <rect>
            <x>20</x>
            <y>30</y>
-           <width>111</width>
-           <height>41</height>
+           <width>121</width>
+           <height>81</height>
           </rect>
          </property>
          <property name="text">
@@ -276,10 +362,10 @@
         <widget class="QPushButton" name="pushButton_circles_load">
          <property name="geometry">
           <rect>
-           <x>20</x>
-           <y>190</y>
-           <width>91</width>
-           <height>41</height>
+           <x>50</x>
+           <y>30</y>
+           <width>121</width>
+           <height>81</height>
           </rect>
          </property>
          <property name="text">
@@ -327,6 +413,32 @@
           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
          </property>
         </widget>
+        <widget class="QLabel" name="label_6">
+         <property name="geometry">
+          <rect>
+           <x>60</x>
+           <y>140</y>
+           <width>71</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Name:</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_7">
+         <property name="geometry">
+          <rect>
+           <x>60</x>
+           <y>170</y>
+           <width>71</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Size:</string>
+         </property>
+        </widget>
         <widget class="QLabel" name="label_circles_output">
          <property name="geometry">
           <rect>
@@ -354,10 +466,10 @@
         <widget class="QPushButton" name="pushButton_corners_load">
          <property name="geometry">
           <rect>
-           <x>50</x>
-           <y>180</y>
-           <width>91</width>
-           <height>41</height>
+           <x>30</x>
+           <y>30</y>
+           <width>121</width>
+           <height>81</height>
           </rect>
          </property>
          <property name="text">
@@ -403,6 +515,32 @@
          </property>
          <property name="alignment">
           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_8">
+         <property name="geometry">
+          <rect>
+           <x>40</x>
+           <y>140</y>
+           <width>71</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Name:</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_9">
+         <property name="geometry">
+          <rect>
+           <x>40</x>
+           <y>170</y>
+           <width>71</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Size:</string>
          </property>
         </widget>
         <widget class="QLabel" name="label_corners_corners_output">
@@ -476,10 +614,10 @@
         <widget class="QPushButton" name="pushButton_histograms_load">
          <property name="geometry">
           <rect>
-           <x>20</x>
-           <y>50</y>
-           <width>101</width>
-           <height>31</height>
+           <x>40</x>
+           <y>20</y>
+           <width>121</width>
+           <height>81</height>
           </rect>
          </property>
          <property name="text">
@@ -524,6 +662,32 @@
           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
          </property>
         </widget>
+        <widget class="QLabel" name="label_10">
+         <property name="geometry">
+          <rect>
+           <x>50</x>
+           <y>160</y>
+           <width>71</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Size:</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_11">
+         <property name="geometry">
+          <rect>
+           <x>50</x>
+           <y>130</y>
+           <width>71</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Name:</string>
+         </property>
+        </widget>
         <widget class="QLabel" name="label_histograms_hinput">
          <property name="geometry">
           <rect>
@@ -549,8 +713,8 @@
         <widget class="QRadioButton" name="radioButton">
          <property name="geometry">
           <rect>
-           <x>10</x>
-           <y>170</y>
+           <x>20</x>
+           <y>220</y>
            <width>112</width>
            <height>23</height>
           </rect>
@@ -562,8 +726,8 @@
         <widget class="QRadioButton" name="radioButton_2">
          <property name="geometry">
           <rect>
-           <x>120</x>
-           <y>170</y>
+           <x>130</x>
+           <y>220</y>
            <width>112</width>
            <height>23</height>
           </rect>
@@ -575,10 +739,10 @@
         <widget class="QPushButton" name="pushButton_histograms_load_target">
          <property name="geometry">
           <rect>
-           <x>20</x>
-           <y>290</y>
-           <width>131</width>
-           <height>31</height>
+           <x>30</x>
+           <y>280</y>
+           <width>161</width>
+           <height>71</height>
           </rect>
          </property>
          <property name="text">
@@ -594,13 +758,39 @@
          <property name="geometry">
           <rect>
            <x>20</x>
-           <y>90</y>
-           <width>141</width>
-           <height>31</height>
+           <y>40</y>
+           <width>171</width>
+           <height>81</height>
           </rect>
          </property>
          <property name="text">
           <string>Load Image...</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_12">
+         <property name="geometry">
+          <rect>
+           <x>30</x>
+           <y>150</y>
+           <width>71</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Name:</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_13">
+         <property name="geometry">
+          <rect>
+           <x>30</x>
+           <y>190</y>
+           <width>71</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Size:</string>
          </property>
         </widget>
         <widget class="QLabel" name="InputSegLabel">
@@ -664,6 +854,166 @@
          </property>
         </widget>
        </widget>
+       <widget class="QWidget" name="tab_Hyprid">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <attribute name="title">
+         <string>Page</string>
+        </attribute>
+        <widget class="QPushButton" name="pushButton_Hyprid_load_1">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>60</y>
+           <width>171</width>
+           <height>81</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Load Image1</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="pushButton_Hyprid_load_2">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>210</y>
+           <width>171</width>
+           <height>81</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Load Image2</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_Hyprid_input_1">
+         <property name="geometry">
+          <rect>
+           <x>250</x>
+           <y>30</y>
+           <width>221</width>
+           <height>161</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::Box</enum>
+         </property>
+         <property name="text">
+          <string>Input image1</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_Hyprid_input_2">
+         <property name="geometry">
+          <rect>
+           <x>240</x>
+           <y>210</y>
+           <width>231</width>
+           <height>191</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::Box</enum>
+         </property>
+         <property name="text">
+          <string>Input image2</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_Hyprid_output">
+         <property name="geometry">
+          <rect>
+           <x>540</x>
+           <y>80</y>
+           <width>321</width>
+           <height>261</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::Box</enum>
+         </property>
+         <property name="text">
+          <string>output image</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+         </property>
+        </widget>
+       </widget>
+       <widget class="QWidget" name="tab_Normalize">
+        <attribute name="title">
+         <string>Page</string>
+        </attribute>
+        <widget class="QPushButton" name="pushButton_Normalize_load">
+         <property name="geometry">
+          <rect>
+           <x>40</x>
+           <y>70</y>
+           <width>161</width>
+           <height>71</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Load Image</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="pushButton_Normalize">
+         <property name="geometry">
+          <rect>
+           <x>40</x>
+           <y>200</y>
+           <width>161</width>
+           <height>71</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Normalize</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_Normalize_input">
+         <property name="geometry">
+          <rect>
+           <x>290</x>
+           <y>90</y>
+           <width>231</width>
+           <height>201</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::Box</enum>
+         </property>
+         <property name="text">
+          <string>Input image</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_Normalize_output">
+         <property name="geometry">
+          <rect>
+           <x>570</x>
+           <y>90</y>
+           <width>251</width>
+           <height>201</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::Box</enum>
+         </property>
+         <property name="text">
+          <string>Output image</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+         </property>
+        </widget>
+       </widget>
       </widget>
      </item>
     </layout>
@@ -674,7 +1024,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1276</width>
+     <width>1148</width>
      <height>26</height>
     </rect>
    </property>

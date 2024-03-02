@@ -1,6 +1,6 @@
 import sys
 from PyQt5 import QtCore, QtGui,QtWidgets
-from PyQt5.QtGui import QPainter, QColor, QPen,QPixmap
+from PyQt5.QtGui import QPainter, QColor, QPen,QPixmap,QImage
 from PyQt5.QtWidgets import QApplication, QLabel, QWidget,QMainWindow,QPushButton,QFrame
 from PyQt5.QtCore import Qt
 from functools import partial
@@ -18,6 +18,7 @@ import NewHoughCircle
 import imageio
 import newSnake
 import math
+from functools import partial
 
 
 imgForFilteration = None
@@ -41,6 +42,11 @@ class ImageSnake (QtWidgets.QLabel):
         super(ImageSnake,self).__init__(parent=parent)
         self.initUI()
         self.setMouseTracking(True)
+        
+        
+        
+    
+        
     
     def initUI(self):
         global pixmap
@@ -120,6 +126,12 @@ class ImageSnake (QtWidgets.QLabel):
         
     def alert(self,snakeContour):
      self.update()
+     
+     
+    def normalize_image(img):
+        lmin = float(img.min())
+        lmax = float(img.max())
+        return np.floor((img - lmin) / (lmax - lmin) * 255.0) 
 
 
 
@@ -138,9 +150,17 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.pushButton_corners_load.clicked.connect(partial(self.loadImage,self.label_corners_input,self.label_8,self.label_9,5))
         self.SnakeLoad.clicked.connect(self.Browse)
         self.StartSnake.clicked.connect(self.snake)
+        
+        self.pushButton_normalize.clicked.connect(self.normalize_image)
+        
+        
 
         self.radioButton.clicked.connect(self.histogramEqualization)
         self.radioButton_2.clicked.connect(self.EnableButton)
+    
+    
+    
+    
     
     def loadImage(self,inputLabel,nameLabel,sizeLabel,flag):
         filename, _ = QtWidgets.QFileDialog.getOpenFileName(self, 'Open file', '', 'Image files (*.jpeg *.jpg *.png)', options=QtWidgets.QFileDialog.DontUseNativeDialog)
@@ -662,10 +682,31 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         snakeContour = newSnake.kassSnake(np.array(myImage), init, wEdge=1.0, alpha=0.5, beta=10, gamma=0.001, maxIterations=500, maxPixelMove=1.0, convergence=0.1)
         SnakeFlag = True
         self.lb.alert(snakeContour)
+        
+    def normalize(self):
+        global imgForNormalization  # Ensure the image is accessible globally
+        normalized_image = self.normalize_image(imgForNormalization)
+        self.show_image(normalized_image, self.label_normalize_output)
+
+    def show_image(self, img, label):
+        height, width, channels = img.shape
+        bytes_per_line = channels * width
+        q_img = QImage(img.data, width, height, bytes_per_line, QImage.Format_RGB888)
+        pixmap = QPixmap.fromImage(q_img)
+        label.setPixmap(pixmap)
+        label.setScaledContents(True)
 
 
+    def normalize_image(self):
+        pixmap = self.ui.label_lines_input.pixmap()
+        if pixmap is not None:
+            image = pixmap.toImage()
+            image = image.convertToFormat(QtGui.QImage.Format_Grayscale8)
+            normalized_pixmap = QtGui.QPixmap.fromImage(image)
+            self.ui.label_lines_input.setPixmap(normalized_pixmap)
+        else:
+            QtWidgets.QMessageBox.warning(self, "Warning", "Please load an image first.")
 
-    
        
 
 if __name__ == "__main__":
