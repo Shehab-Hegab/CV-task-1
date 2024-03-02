@@ -24,7 +24,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>3</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -492,9 +492,9 @@ p, li { white-space: pre-wrap; }
      <widget class="QLabel" name="label_Normalize_output_2">
       <property name="geometry">
        <rect>
-        <x>570</x>
+        <x>610</x>
         <y>120</y>
-        <width>251</width>
+        <width>231</width>
         <height>201</height>
        </rect>
       </property>
