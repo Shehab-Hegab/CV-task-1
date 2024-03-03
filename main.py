@@ -5,8 +5,6 @@ from PyQt5.uic import loadUi
 import numpy as np
 import cv2 as cv
 
-
-
 class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
@@ -18,6 +16,8 @@ class MainWindow(QMainWindow):
         # Connect the normalize button to the function
         self.pushButton_Normalize_2.clicked.connect(self.normalize_image_and_display)
         
+        self.loaded_image = None  # Initialize loaded_image attribute
+
     def load_image_for_normalization(self):
         file_dialog = QFileDialog()
         file_dialog.setNameFilter("Images (*.png *.jpg *.bmp)")
@@ -33,14 +33,14 @@ class MainWindow(QMainWindow):
 
     def normalize_image_and_display(self):
         # Check if an image has been loaded
-        if not hasattr(self, 'loaded_image'):
+        if self.loaded_image is None:
             QMessageBox.warning(self, "Warning", "Please load an image before normalizing.")
             return
 
-        # Perform normalization
         try:
+            # Perform normalization
             normalized_image = self.normalize_image(self.loaded_image)
-        except Exception as e:  # Catch any unexpected errors during normalization
+        except Exception as e:
             QMessageBox.critical(self, "Error", f"An error occurred during normalization: {str(e)}")
             return
 
@@ -53,7 +53,6 @@ class MainWindow(QMainWindow):
             self.label_Normalize_output_2.setPixmap(normalized_pixmap.scaled(self.label_Normalize_output_2.size()))
 
     def normalize_image(self, image):
-        
         # Ensure the image has 3 or 4 channels (RGB or RGBA)
         image_format = QImage.Format_RGB888 if image.format() == QImage.Format_RGB32 else QImage.Format_RGBA8888
         image = image.convertToFormat(image_format)
@@ -61,17 +60,17 @@ class MainWindow(QMainWindow):
             channels = 3
         else:
             channels = 4
+
         # Convert QImage data to numpy array
         ptr = image.bits()
         ptr.setsize(image.byteCount())
         image_array = np.array(ptr).reshape(image.height(), image.width(), channels)
-    
+
         # Normalize using OpenCV's min-max normalization
         normalized_image = cv.normalize(image_array, None, 0, 255, cv.NORM_MINMAX)
-    
+
         # Return the normalized image as a NumPy array
         return normalized_image
-
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
