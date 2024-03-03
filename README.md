@@ -4,12 +4,19 @@ Filtering and edge detection
 
 #Team members:
 
-1-shehab mohamed 
+1-Shehab Mohamed 
 
-2-marwan osama
+2-Marwan Osama
 
-3-mohamed aziz
+3-Mohamed Aziz
 
-4-heidi hussin
+4-Heidi Hussin
 
-5-Salema abdalTawab
+5-Salema AbdalTawab
+
+
+
+6-Normalize the image.
+
+![Screenshot 2024-03-03 220524](https://github.com/Shehab-Hegab/CV-task-1/assets/137138481/5cd9b602-9b62-4b8d-9830-d33d96bbedf9)
+
