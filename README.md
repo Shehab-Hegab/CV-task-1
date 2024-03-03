@@ -44,5 +44,8 @@ Filtering and edge detection
 ####
 Links
 
+
+##normalize
+
 https://www.pythonpool.com/cv2-normalize/
 
