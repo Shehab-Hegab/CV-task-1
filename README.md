@@ -16,6 +16,12 @@ Filtering and edge detection
 
 
 
+###########
+###########
+##########
+
+
+
 #####
 
 6-Normalize the image.
