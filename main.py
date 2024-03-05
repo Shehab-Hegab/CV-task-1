@@ -20,6 +20,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         self.pushButton_filters_load.clicked.connect(self.load_image_for_filtering)
         # Connect the normalize button to the function
         self.pushButton_Normalize_2.clicked.connect(self.normalize_image_and_display)
+        self.pushButton_histograms_load_2.clicked.connect(self.load_image_for_histogram)
         self.comboBox.currentIndexChanged.connect(self.update_parameters)
         
         self.filter_parameters = {"Gaussian": {"KernelSize": 3, "Std": 1},
@@ -50,19 +51,18 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         file_name, _ = QFileDialog.getOpenFileName(self, "Open Image File", "", "Image Files (*.png *.jpg *.jpeg *.bmp *.gif)", options=options)
         
         if file_name:
-            self.load_image(file_name)
+            self.load_image(file_name,self.label_filters_input)
         
-    def load_image(self, file_path):
+    def load_image(self, file_path,target_label):
         image = cv.imread(file_path)
         # this new var is for when applying low pass filter
         global array_image
         array_image =image
         # print("The Array is: ", array_image) #printing the array
-        image = QtGui.QImage(image.data, image.shape[1], image.shape[0], QtGui.QImage.Format_RGB888).rgbSwapped()
-        pixmap = QtGui.QPixmap.fromImage(image)
-        self.label_filters_input.setPixmap(pixmap.scaled(self.label_filters_input.size()))
-        
-        
+        image_qt = QtGui.QImage(image.data, image.shape[1], image.shape[0], QtGui.QImage.Format_RGB888).rgbSwapped()
+        pixmap = QtGui.QPixmap.fromImage(image_qt)
+        target_label.setPixmap(pixmap.scaled(target_label.size()))
+                
     def load_image_for_normalization(self):
         file_dialog = QFileDialog()
         file_dialog.setNameFilter("Images (*.png *.jpg *.bmp)")
@@ -75,6 +75,13 @@ class MainWindow(QMainWindow,Ui_MainWindow):
 
             # Store the loaded image for later normalization
             self.loaded_image = pixmap.toImage()
+
+    def load_image_for_histogram(self):
+        options = QFileDialog.Options()
+        options |= QFileDialog.DontUseNativeDialog
+        file_name, _ = QFileDialog.getOpenFileName(self, "Open Image File", "", "Image Files (*.png *.jpg *.jpeg *.bmp *.gif)", options=options)
+        if file_name:
+            self.load_image(file_name, self.label_histograms_input_2)
 
     def normalize_image_and_display(self):
         # Check if an image has been loaded
