@@ -26,11 +26,9 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                                   "Uniform": {"KernelSize": 3},
                                   "Salt": {},
                                   "Pepper-Noise": {},
-                                  "LP-Filter": {"KernelSize": 3},
-                                  "HP-Filter": {"KernelSize": 3}
+                                  "LP-Filter": {"KernelSize": 3,"Radius":40},
+                                  "HP-Filter": {"KernelSize": 3,"Radius":40}
                                   }
-        
-        
     def update_parameters(self):
         # Get the selected filter from the combobox
         selected_filter = self.comboBox.currentText()
@@ -43,8 +41,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         else:
             print("Filter not found in filter parameters dictionary!")
         
-        
-        
+    
         
         
     def load_image_for_filtering(self):
@@ -161,6 +158,45 @@ class MainWindow(QMainWindow,Ui_MainWindow):
             pixmap = QPixmap.fromImage(qimage)
             self.label_filters_output.setPixmap(pixmap.scaled(self.label_filters_output.size()))
             
+        elif  filter_name == "HP-Filter":
+            # Convert the input image to grayscale
+            gray_image = cv.cvtColor(array_image, cv.COLOR_BGR2GRAY)
+
+            # Perform FFT
+            fft_image = np.fft.fft2(gray_image)
+            fft_shifted = np.fft.fftshift(fft_image)
+
+            # Create a circular low pass filter
+            rows, cols = gray_image.shape
+            center_row, center_col = rows // 2, cols // 2
+            x, y = np.ogrid[:rows, :cols]
+            radius = parameters.get("Radius", 50)
+            mask = np.ones((rows, cols), dtype=bool) # opposite to LP-filter we initialize all elements to true
+            mask[(x - center_row) ** 2 + (y - center_col) ** 2 <= radius ** 2] = False
+
+            # Apply the filter
+            fft_shifted_filtered = fft_shifted * mask
+
+            # Perform inverse FFT
+            ifft_shifted_filtered = np.fft.ifftshift(fft_shifted_filtered)
+            ifft_filtered = np.fft.ifft2(ifft_shifted_filtered)
+
+            # Convert back to uint8
+            filtered_image = np.abs(ifft_filtered).astype(np.uint8)
+
+            # Convert grayscale image to RGB format for display
+            filtered_image_rgb = cv.cvtColor(filtered_image, cv.COLOR_GRAY2RGB)
+
+            # Convert image to QImage
+            h, w, c = filtered_image_rgb.shape
+            qimage = QImage(filtered_image_rgb.data, w, h, w * c, QImage.Format_RGB888)
+
+            # Convert QImage to QPixmap and display on the output label
+            pixmap = QPixmap.fromImage(qimage)
+            self.label_filters_output.setPixmap(pixmap.scaled(self.label_filters_output.size()))
+            
+            
+        
         else:
             pass
 
