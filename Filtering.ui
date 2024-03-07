@@ -24,7 +24,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>4</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -595,6 +595,66 @@ p, li { white-space: pre-wrap; }
       <property name="alignment">
        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
       </property>
+     </widget>
+     <widget class="QComboBox" name="comboBox_2">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>400</y>
+        <width>151</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <item>
+       <property name="text">
+        <string>Gussion</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>AVG</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Median</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string/>
+       </property>
+      </item>
+     </widget>
+     <widget class="QComboBox" name="comboBox_3">
+      <property name="geometry">
+       <rect>
+        <x>250</x>
+        <y>400</y>
+        <width>151</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <item>
+       <property name="text">
+        <string>Sobel</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Roberts</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Prewitt</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Canny</string>
+       </property>
+      </item>
      </widget>
     </widget>
     <widget class="QWidget" name="tab_6">
