@@ -17,14 +17,14 @@
    <widget class="QTabWidget" name="sdfae">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>20</y>
+      <x>10</x>
+      <y>30</y>
       <width>891</width>
       <height>541</height>
      </rect>
     </property>
     <property name="currentIndex">
-     <number>3</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -439,6 +439,19 @@ p, li { white-space: pre-wrap; }
        <string>Load Image2</string>
       </property>
      </widget>
+     <widget class="QPushButton" name="pushButton_Hyprid_load_5">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>390</y>
+        <width>151</width>
+        <height>61</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Hyprid</string>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="tab_3">
      <attribute name="title">
@@ -506,6 +519,163 @@ p, li { white-space: pre-wrap; }
       </property>
       <property name="alignment">
        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tab_5">
+     <attribute name="title">
+      <string>Noise</string>
+     </attribute>
+     <widget class="QPushButton" name="pushButton_Normalize_load_3">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>120</y>
+        <width>161</width>
+        <height>71</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Load Image</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_Normalize_output_3">
+      <property name="geometry">
+       <rect>
+        <x>450</x>
+        <y>290</y>
+        <width>301</width>
+        <height>211</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::Box</enum>
+      </property>
+      <property name="text">
+       <string>Without Noise</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_Normalize_input_3">
+      <property name="geometry">
+       <rect>
+        <x>230</x>
+        <y>40</y>
+        <width>231</width>
+        <height>201</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::Box</enum>
+      </property>
+      <property name="text">
+       <string>Input Image</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_Normalize_output_4">
+      <property name="geometry">
+       <rect>
+        <x>540</x>
+        <y>40</y>
+        <width>231</width>
+        <height>201</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::Box</enum>
+      </property>
+      <property name="text">
+       <string>With Noise</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tab_6">
+     <attribute name="title">
+      <string>Thresholding</string>
+     </attribute>
+     <widget class="QPushButton" name="pushButton_Normalize_load_4">
+      <property name="geometry">
+       <rect>
+        <x>50</x>
+        <y>110</y>
+        <width>161</width>
+        <height>71</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Load Image</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_Normalize_output_5">
+      <property name="geometry">
+       <rect>
+        <x>620</x>
+        <y>130</y>
+        <width>231</width>
+        <height>201</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::Box</enum>
+      </property>
+      <property name="text">
+       <string>Output Image</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_Normalize_3">
+      <property name="geometry">
+       <rect>
+        <x>50</x>
+        <y>240</y>
+        <width>161</width>
+        <height>71</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Local</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_Normalize_input_4">
+      <property name="geometry">
+       <rect>
+        <x>300</x>
+        <y>130</y>
+        <width>231</width>
+        <height>201</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::Box</enum>
+      </property>
+      <property name="text">
+       <string>Input Image</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_Normalize_4">
+      <property name="geometry">
+       <rect>
+        <x>50</x>
+        <y>320</y>
+        <width>161</width>
+        <height>71</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Global</string>
       </property>
      </widget>
     </widget>
