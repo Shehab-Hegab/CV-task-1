@@ -6,9 +6,8 @@ from PyQt5.uic import loadUi
 import numpy as np
 import cv2 as cv
 from Filtering import Ui_MainWindow
-from scipy import fftpack
-from PIL import Image, ImageDraw
-import imageio
+from PIL import Image
+import matplotlib.pyplot as plt
 
 class MainWindow(QMainWindow,Ui_MainWindow):
     def __init__(self):
@@ -30,6 +29,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
                                   "LP-Filter": {"KernelSize": 3,"Radius":40},
                                   "HP-Filter": {"KernelSize": 3,"Radius":40}
                                   }
+    
     def update_parameters(self):
         # Get the selected filter from the combobox
         selected_filter = self.comboBox.currentText()
@@ -82,6 +82,11 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         file_name, _ = QFileDialog.getOpenFileName(self, "Open Image File", "", "Image Files (*.png *.jpg *.jpeg *.bmp *.gif)", options=options)
         if file_name:
             self.load_image(file_name, self.label_histograms_input_2)
+            # Load the image using OpenCV
+            image = cv.imread(file_name)
+            # print(image)
+            self.show_histogram(image,self.label_histograms_hinput_2)
+
 
     def normalize_image_and_display(self):
         # Check if an image has been loaded
@@ -124,9 +129,8 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         # Return the normalized image as a NumPy array
         return normalized_image
 
-
     def apply_filter(self,filter_name,parameters):
-        
+
         if filter_name == "LP-Filter":
             
         # Convert the input image to grayscale
@@ -206,6 +210,72 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         
         else:
             pass
+
+    # def show_histogram(self,image,label):
+    #     imgForHistogram=self.rgb2gray(image/255.0)
+    #     imgForHistogram = (imgForHistogram-np.min(imgForHistogram))/(np.max(imgForHistogram)-np.min(imgForHistogram))
+    #     imgForHistogram = (imgForHistogram * 255).astype(np.uint8)
+    #     qimg = QtGui.QImage(imgForHistogram.data, imgForHistogram.shape[1], imgForHistogram.shape[0],imgForHistogram.strides[0], QtGui.QImage.Format_Grayscale8)
+    #     pixmap = QtGui.QPixmap.fromImage(qimg)
+    #     label.setPixmap(pixmap.scaled(label.size()))    
+        
+    
+    # def rgb2gray(self,rgb):
+    #     return np.dot(rgb[...,:3], [0.2989, 0.5870, 0.1140])
+
+
+    # def show_histogram(self, image, label):
+    #     # Calculate histogram
+    #     histogram = cv.calcHist([image], [0], None, [256], [0, 256])
+
+    #     # Normalize histogram
+    #     histogram /= np.sum(histogram)
+
+    #     # Plot histogram using Matplotlib
+    #     plt.figure()
+    #     plt.plot(histogram)
+    #     plt.xlabel('Intensity')
+    #     plt.ylabel('Frequency')
+    #     plt.title('Histogram')
+    #     plt.grid(True)
+
+    #     # Convert the plot to a QImage
+    #     plt.savefig('histogram.png')
+    #     hist_image = Image.open('histogram.png')
+    #     hist_image = hist_image.convert('RGB')
+    #     hist_qimage = QImage(hist_image.tobytes(), hist_image.width, hist_image.height, QImage.Format_RGB888)
+
+    #     # Convert QImage to QPixmap and display on the output label
+    #     pixmap = QPixmap.fromImage(hist_qimage)
+    #     label.setPixmap(pixmap.scaled(label.size()))
+    
+    def show_histogram(self, image, label):
+        # Flatten the image array to a 1D array
+        img_flat = image.ravel()
+
+        # Calculate histogram using numpy
+        histogram, bins = np.histogram(img_flat, bins=256, range=(0, 256), density=True)
+
+        # Plot histogram using Matplotlib
+        plt.figure()
+        plt.plot(histogram, color='blue')  # Plot histogram in black (grayscale)
+        plt.xlabel('Intensity')
+        plt.ylabel('Frequency')
+        plt.title('Histogram')
+        plt.grid(True)
+
+        # Convert the plot to a QImage
+        plt.savefig('histogram.png')
+        hist_image = Image.open('histogram.png')
+        hist_image = hist_image.convert('RGB')
+        hist_qimage = QImage(hist_image.tobytes(), hist_image.width, hist_image.height, QImage.Format_RGB888)
+
+        # Convert QImage to QPixmap and display on the output label
+        pixmap = QPixmap.fromImage(hist_qimage)
+        label.setPixmap(pixmap.scaled(label.size()))
+
+
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
