@@ -249,16 +249,18 @@ class MainWindow(QMainWindow,Ui_MainWindow):
     #     pixmap = QPixmap.fromImage(hist_qimage)
     #     label.setPixmap(pixmap.scaled(label.size()))
     
+    
     def show_histogram(self, image, label):
-        # Flatten the image array to a 1D array
-        img_flat = image.ravel()
+        # Calculate histogram for each color channel
+        hist_red = cv.calcHist([image], [0], None, [256], [0, 256])
+        hist_green = cv.calcHist([image], [1], None, [256], [0, 256])
+        hist_blue = cv.calcHist([image], [2], None, [256], [0, 256])
 
-        # Calculate histogram using numpy
-        histogram, bins = np.histogram(img_flat, bins=256, range=(0, 256), density=True)
-
-        # Plot histogram using Matplotlib
+        # Plot histograms using Matplotlib
         plt.figure()
-        plt.plot(histogram, color='blue')  # Plot histogram in black (grayscale)
+        plt.plot(hist_red, color='red')
+        plt.plot(hist_green, color='green')
+        plt.plot(hist_blue, color='blue')
         plt.xlabel('Intensity')
         plt.ylabel('Frequency')
         plt.title('Histogram')
@@ -273,6 +275,32 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         # Convert QImage to QPixmap and display on the output label
         pixmap = QPixmap.fromImage(hist_qimage)
         label.setPixmap(pixmap.scaled(label.size()))
+
+    
+    # def show_histogram(self, image, label):
+    #     # Flatten the image array to a 1D array
+    #     img_flat = image.ravel()
+
+    #     # Calculate histogram using numpy
+    #     histogram, bins = np.histogram(img_flat, bins=256, range=(0, 256), density=True)
+
+    #     # Plot histogram using Matplotlib
+    #     plt.figure()
+    #     plt.plot(histogram, color='blue')  # Plot histogram in black (grayscale)
+    #     plt.xlabel('Intensity')
+    #     plt.ylabel('Frequency')
+    #     plt.title('Histogram')
+    #     plt.grid(True)
+
+    #     # Convert the plot to a QImage
+    #     plt.savefig('histogram.png')
+    #     hist_image = Image.open('histogram.png')
+    #     hist_image = hist_image.convert('RGB')
+    #     hist_qimage = QImage(hist_image.tobytes(), hist_image.width, hist_image.height, QImage.Format_RGB888)
+
+    #     # Convert QImage to QPixmap and display on the output label
+    #     pixmap = QPixmap.fromImage(hist_qimage)
+    #     label.setPixmap(pixmap.scaled(label.size()))
 
 
 
