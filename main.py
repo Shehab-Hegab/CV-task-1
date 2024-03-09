@@ -7,9 +7,55 @@ import numpy as np
 import cv2 as cv
 from Filtering import Ui_MainWindow
 from PIL import Image
-import matplotlib.pyplot as plt
+from matplotlib import pyplot as plt
 
 class MainWindow(QMainWindow,Ui_MainWindow):
+
+    #Additive Noise:
+
+    def uniform_noise(img,var):
+        uniform_noise = np.random.randint(0,var,img.shape)
+        new_image= img + uniform_noise
+        new_image= np.clip(new_image,0,255)
+        return new_image
+    
+    def gaussian_noise(img,var):
+        mean = 0
+        gaussian_noise= np.random.normal(mean,var,img.shape)
+        gaussian_noise.round()
+        new_image = img + gaussian_noise
+        new_image = np.clip(new_image,0,255)
+        return new_image
+    
+    def salt_pepper_noise(img,density=None):
+    
+        # Check if the image is RGB and convert it to gray scale
+        if len(img.shape)==3:
+            gray_img= np.mean(img,axis=2)
+        else: 
+            gray_img= img
+        
+        rows, cols = gray_img.shape
+        
+        if density == None:
+            density= np.random.uniform(0, 1)
+        pixels_number= rows*cols
+        noise_pixels= int(density * pixels_number)
+        
+        salt_noise= np.random.randint(0,noise_pixels)
+        pepper_noise = noise_pixels - salt_noise
+        
+        for i in range(salt_noise):
+            row = np.random.randint(0, rows-1)
+            col = np.random.randint(0, cols-1)
+            gray_img[row][col]=255
+        for i in range(pepper_noise):
+            row = np.random.randint(0, rows-1)
+            col = np.random.randint(0, cols-1)
+            gray_img[row][col]=0    
+        
+        return gray_img
+
     def __init__(self):
         super(MainWindow, self).__init__()
         self.setupUi(self)
