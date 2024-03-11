@@ -1,7 +1,9 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, QMessageBox
+
+import cv2
+from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, QMessageBox, QComboBox
 from PyQt5.QtGui import QPixmap, QImage
-from PyQt5 import QtGui,QtCore
+from PyQt5 import QtGui, QtCore
 from PyQt5.uic import loadUi
 import numpy as np
 import cv2 as cv
@@ -9,51 +11,52 @@ from Filtering import Ui_MainWindow
 from PIL import Image
 from matplotlib import pyplot as plt
 
-class MainWindow(QMainWindow,Ui_MainWindow):
 
-    #Additive Noise:
+class MainWindow(QMainWindow, Ui_MainWindow):
 
-    def uniform_noise(img,var):
-        uniform_noise = np.random.randint(0,var,img.shape)
-        new_image= img + uniform_noise
-        new_image= np.clip(new_image,0,255)
+    # Additive Noise:
+
+    def uniform_noise(img, var):
+        uniform_noise = np.random.randint(0, var, img.shape)
+        new_image = img + uniform_noise
+        new_image = np.clip(new_image, 0, 255)
         return new_image
-    
-    def gaussian_noise(img,var):
+
+    def gaussian_noise(img, var):
         mean = 0
-        gaussian_noise= np.random.normal(mean,var,img.shape)
+        gaussian_noise = np.random.normal(mean, var, img.shape)
         gaussian_noise.round()
         new_image = img + gaussian_noise
-        new_image = np.clip(new_image,0,255)
+        new_image = np.clip(new_image, 0, 255)
         return new_image
-    
-    def salt_pepper_noise(img,density=None):
-    
+
+    def salt_pepper_noise(img, density=None):
+
         # Check if the image is RGB and convert it to gray scale
-        if len(img.shape)==3:
-            gray_img= np.mean(img,axis=2)
-        else: 
-            gray_img= img
-        
+        if len(img.shape) == 3:
+            gray_img = np.mean(img, axis=2)
+        else:
+            gray_img = img
+
         rows, cols = gray_img.shape
-        
+
         if density == None:
-            density= np.random.uniform(0, 1)
-        pixels_number= rows*cols
-        noise_pixels= int(density * pixels_number)
-        
-        salt_noise= np.random.randint(0,noise_pixels)
+            density = np.random.uniform(0, 1)
+        pixels_number = rows * cols
+        noise_pixels = int(density * pixels_number)
+
+        salt_noise = np.random.randint(0, noise_pixels)
         pepper_noise = noise_pixels - salt_noise
-        
+
         for i in range(salt_noise):
-            row = np.random.randint(0, rows-1)
-            col = np.random.randint(0, cols-1)
-            gray_img[row][col]=255
+            row = np.random.randint(0, rows - 1)
+            col = np.random.randint(0, cols - 1)
+            gray_img[row][col] = 255
         for i in range(pepper_noise):
-            row = np.random.randint(0, rows-1)
-            col = np.random.randint(0, cols-1)
-            gray_img[row][col]=0    
-        
+            row = np.random.randint(0, rows - 1)
+            col = np.random.randint(0, cols - 1)
+            gray_img[row][col] = 0
+
         return gray_img
 
     def __init__(self):
@@ -67,15 +70,18 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         self.pushButton_Normalize_2.clicked.connect(self.normalize_image_and_display)
         self.pushButton_histograms_load_2.clicked.connect(self.load_image_for_histogram)
         self.comboBox.currentIndexChanged.connect(self.update_parameters)
-        
+        self.pushButton_Normalize_load_3.clicked.connect(self.load_image_for_input_Noise)
+        self.comboBox_2.currentIndexChanged.connect(self.apply_filter)
+        self.comboBox_3.currentIndexChanged.connect(self.apply_edge_detection)
+
         self.filter_parameters = {"Gaussian": {"KernelSize": 3, "Std": 1},
                                   "Uniform": {"KernelSize": 3},
                                   "Salt": {},
                                   "Pepper-Noise": {},
-                                  "LP-Filter": {"KernelSize": 3,"Radius":40},
-                                  "HP-Filter": {"KernelSize": 3,"Radius":40}
+                                  "LP-Filter": {"KernelSize": 3, "Radius": 40},
+                                  "HP-Filter": {"KernelSize": 3, "Radius": 40}
                                   }
-    
+
     def update_parameters(self):
         # Get the selected filter from the combobox
         selected_filter = self.comboBox.currentText()
@@ -87,28 +93,26 @@ class MainWindow(QMainWindow,Ui_MainWindow):
             self.apply_filter(selected_filter, parameters)
         else:
             print("Filter not found in filter parameters dictionary!")
-        
-    
-        
-        
+
     def load_image_for_filtering(self):
         options = QFileDialog.Options()
         options |= QFileDialog.DontUseNativeDialog
-        file_name, _ = QFileDialog.getOpenFileName(self, "Open Image File", "", "Image Files (*.png *.jpg *.jpeg *.bmp *.gif)", options=options)
-        
+        file_name, _ = QFileDialog.getOpenFileName(self, "Open Image File", "",
+                                                   "Image Files (*.png *.jpg *.jpeg *.bmp *.gif)", options=options)
+
         if file_name:
-            self.load_image(file_name,self.label_filters_input)
-        
-    def load_image(self, file_path,target_label):
+            self.load_image(file_name, self.label_filters_input)
+
+    def load_image(self, file_path, target_label):
         image = cv.imread(file_path)
         # this new var is for when applying low pass filter
         global array_image
-        array_image =image
+        array_image = image
         # print("The Array is: ", array_image) #printing the array
         image_qt = QtGui.QImage(image.data, image.shape[1], image.shape[0], QtGui.QImage.Format_RGB888).rgbSwapped()
         pixmap = QtGui.QPixmap.fromImage(image_qt)
         target_label.setPixmap(pixmap.scaled(target_label.size()))
-                
+
     def load_image_for_normalization(self):
         file_dialog = QFileDialog()
         file_dialog.setNameFilter("Images (*.png *.jpg *.bmp)")
@@ -125,14 +129,14 @@ class MainWindow(QMainWindow,Ui_MainWindow):
     def load_image_for_histogram(self):
         options = QFileDialog.Options()
         options |= QFileDialog.DontUseNativeDialog
-        file_name, _ = QFileDialog.getOpenFileName(self, "Open Image File", "", "Image Files (*.png *.jpg *.jpeg *.bmp *.gif)", options=options)
+        file_name, _ = QFileDialog.getOpenFileName(self, "Open Image File", "",
+                                                   "Image Files (*.png *.jpg *.jpeg *.bmp *.gif)", options=options)
         if file_name:
             self.load_image(file_name, self.label_histograms_input_2)
             # Load the image using OpenCV
             image = cv.imread(file_name)
             # print(image)
-            self.show_histogram(image,self.label_histograms_hinput_2)
-
+            self.show_histogram(image, self.label_histograms_hinput_2)
 
     def normalize_image_and_display(self):
         # Check if an image has been loaded
@@ -149,14 +153,15 @@ class MainWindow(QMainWindow,Ui_MainWindow):
 
         if normalized_image is not None:
             # Convert normalized image to QPixmap for display
-            normalized_qimage = QImage(normalized_image.data, normalized_image.shape[1], normalized_image.shape[0], normalized_image.strides[0], QImage.Format_RGB888)
+            normalized_qimage = QImage(normalized_image.data, normalized_image.shape[1], normalized_image.shape[0],
+                                       normalized_image.strides[0], QImage.Format_RGB888)
             normalized_pixmap = QPixmap.fromImage(normalized_qimage)
 
             # Display the normalized image on the output label
             self.label_Normalize_output_2.setPixmap(normalized_pixmap.scaled(self.label_Normalize_output_2.size()))
 
     def normalize_image(self, image):
-        
+
         # Ensure the image has 3 or 4 channels (RGB or RGBA)
         image_format = QImage.Format_RGB888 if image.format() == QImage.Format_RGB32 else QImage.Format_RGBA8888
         image = image.convertToFormat(image_format)
@@ -168,18 +173,18 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         ptr = image.bits()
         ptr.setsize(image.byteCount())
         image_array = np.array(ptr).reshape(image.height(), image.width(), channels)
-    
+
         # Normalize using OpenCV's min-max normalization
         normalized_image = cv.normalize(image_array, None, 0, 255, cv.NORM_MINMAX)
-    
+
         # Return the normalized image as a NumPy array
         return normalized_image
 
-    def apply_filter(self,filter_name,parameters):
+    def apply_filter(self, filter_name, parameters):
 
         if filter_name == "LP-Filter":
-            
-        # Convert the input image to grayscale
+
+            # Convert the input image to grayscale
             gray_image = cv.cvtColor(array_image, cv.COLOR_BGR2GRAY)
 
             # Perform FFT
@@ -214,8 +219,8 @@ class MainWindow(QMainWindow,Ui_MainWindow):
             # Convert QImage to QPixmap and display on the output label
             pixmap = QPixmap.fromImage(qimage)
             self.label_filters_output.setPixmap(pixmap.scaled(self.label_filters_output.size()))
-            
-        elif  filter_name == "HP-Filter":
+
+        elif filter_name == "HP-Filter":
             # Convert the input image to grayscale
             gray_image = cv.cvtColor(array_image, cv.COLOR_BGR2GRAY)
 
@@ -228,7 +233,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
             center_row, center_col = rows // 2, cols // 2
             x, y = np.ogrid[:rows, :cols]
             radius = parameters.get("Radius", 50)
-            mask = np.ones((rows, cols), dtype=bool) # opposite to LP-filter we initialize all elements to true
+            mask = np.ones((rows, cols), dtype=bool)  # opposite to LP-filter we initialize all elements to true
             mask[(x - center_row) ** 2 + (y - center_col) ** 2 <= radius ** 2] = False
 
             # Apply the filter
@@ -251,9 +256,9 @@ class MainWindow(QMainWindow,Ui_MainWindow):
             # Convert QImage to QPixmap and display on the output label
             pixmap = QPixmap.fromImage(qimage)
             self.label_filters_output.setPixmap(pixmap.scaled(self.label_filters_output.size()))
-            
-            
-        
+
+
+
         else:
             pass
 
@@ -263,12 +268,10 @@ class MainWindow(QMainWindow,Ui_MainWindow):
     #     imgForHistogram = (imgForHistogram * 255).astype(np.uint8)
     #     qimg = QtGui.QImage(imgForHistogram.data, imgForHistogram.shape[1], imgForHistogram.shape[0],imgForHistogram.strides[0], QtGui.QImage.Format_Grayscale8)
     #     pixmap = QtGui.QPixmap.fromImage(qimg)
-    #     label.setPixmap(pixmap.scaled(label.size()))    
-        
-    
+    #     label.setPixmap(pixmap.scaled(label.size()))
+
     # def rgb2gray(self,rgb):
     #     return np.dot(rgb[...,:3], [0.2989, 0.5870, 0.1140])
-
 
     # def show_histogram(self, image, label):
     #     # Calculate histogram
@@ -294,8 +297,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
     #     # Convert QImage to QPixmap and display on the output label
     #     pixmap = QPixmap.fromImage(hist_qimage)
     #     label.setPixmap(pixmap.scaled(label.size()))
-    
-    
+
     def show_histogram(self, image, label):
         # Calculate histogram for each color channel
         hist_red = cv.calcHist([image], [0], None, [256], [0, 256])
@@ -322,7 +324,6 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         pixmap = QPixmap.fromImage(hist_qimage)
         label.setPixmap(pixmap.scaled(label.size()))
 
-    
     # def show_histogram(self, image, label):
     #     # Flatten the image array to a 1D array
     #     img_flat = image.ravel()
@@ -348,7 +349,99 @@ class MainWindow(QMainWindow,Ui_MainWindow):
     #     pixmap = QPixmap.fromImage(hist_qimage)
     #     label.setPixmap(pixmap.scaled(label.size()))
 
+    def load_image_for_input_Noise(self):
+        options = QFileDialog.Options()
+        options |= QFileDialog.DontUseNativeDialog
+        file_name, _ = QFileDialog.getOpenFileName(self, "Open Image File", "",
+                                                   "Image Files (*.png *.jpg *.jpeg *.bmp *.gif)", options=options)
+        if file_name:
+            # Load the original image
+            original_image = cv2.imread(file_name)
+            # Display the original image in label_Normalize_input_3
+            self.display_image(original_image, self.label_Normalize_input_3)
+            # Add noise to the image
+            noisy_image = self.add_noise(original_image)
+            # Display the noisy image in label_Normalize_output_4
+            self.display_image(noisy_image, self.label_Normalize_output_4)
+            # Store the noisy image for filtering
+            self.noisy_image = noisy_image
+            # Store the original image for edge detection
+            self.original_image = original_image
 
+    def apply_filter(self):
+        selected_filter = self.comboBox_2.currentText()
+        if hasattr(self, 'noisy_image'):
+            filtered_image = self.filter_image(self.noisy_image, selected_filter)
+            if filtered_image is not None:
+                self.display_image(filtered_image, self.label_Normalize_output_3)
+            else:
+                print("Error: Invalid filter type selected")
+
+    def apply_edge_detection(self):
+        selected_edge_detection = self.comboBox_3.currentText()
+        if hasattr(self, 'original_image'):
+            edge_detected_image = self.detect_edges(self.original_image, selected_edge_detection)
+            if edge_detected_image is not None:
+                self.display_image(edge_detected_image, self.label_Normalize_output_3)
+            else:
+                print("Error: Invalid edge detection type selected")
+
+    def detect_edges(self, image, edge_detection_type):
+        if edge_detection_type == "Sobel":
+            sobel_x = cv2.Sobel(image, cv2.CV_64F, 1, 0, ksize=3)
+            sobel_y = cv2.Sobel(image, cv2.CV_64F, 0, 1, ksize=3)
+            sobel_edges = np.sqrt(sobel_x ** 2 + sobel_y ** 2)
+            return sobel_edges.astype('uint8')
+        elif edge_detection_type == "Roberts":
+            roberts_cross_v = np.array([[1, 0], [0, -1]])
+            roberts_cross_h = np.array([[0, 1], [-1, 0]])
+            roberts_x = cv2.filter2D(image, -1, roberts_cross_v)
+            roberts_y = cv2.filter2D(image, -1, roberts_cross_h)
+            roberts_edges = np.abs(roberts_x) + np.abs(roberts_y)
+            return roberts_edges.astype('uint8')
+        elif edge_detection_type == "Prewitt":
+            prewitt_x = cv2.filter2D(image, -1, np.array([[-1, 0, 1], [-1, 0, 1], [-1, 0, 1]]))
+            prewitt_y = cv2.filter2D(image, -1, np.array([[-1, -1, -1], [0, 0, 0], [1, 1, 1]]))
+            prewitt_edges = np.abs(prewitt_x) + np.abs(prewitt_y)
+            return prewitt_edges.astype('uint8')
+        elif edge_detection_type == "Canny":
+            canny_edges = cv2.Canny(image, 100, 200)
+            return canny_edges
+        else:
+            print("Error: Invalid edge detection type selected")
+            return None
+
+    def filter_image(self, image, filter_type):
+        if filter_type == "Gaussian":
+            return cv2.GaussianBlur(image, (5, 5), 0)
+        elif filter_type == "Average":
+            return cv2.blur(image, (5, 5))
+        elif filter_type == "Median":
+            return cv2.medianBlur(image, 5)
+        else:
+            print("Error: Invalid filter type selected")
+            return None
+
+    def add_noise(self, image):
+        mean = 0
+        stddev = 50  # Increase the standard deviation for more noise
+        h, w, c = image.shape
+        noise = np.random.normal(mean, stddev, (h, w, c)).astype(np.uint8)
+        noisy_image = cv2.add(image, noise)
+        return noisy_image
+
+    def display_image(self, image, label):
+        if len(image.shape) == 3:  # RGB image
+            height, width, channel = image.shape
+            bytesPerLine = 3 * width
+            qImg = QImage(image.data, width, height, bytesPerLine, QImage.Format_RGB888).rgbSwapped()
+        else:  # Binary image
+            height, width = image.shape
+            qImg = QImage(image.data, width, height, width, QImage.Format_Grayscale8)
+
+        pixmap = QPixmap.fromImage(qImg)
+        label.setPixmap(pixmap)
+        label.setScaledContents(True)  # Maintain aspect ratio of the pixmap
 
 
 if __name__ == "__main__":
