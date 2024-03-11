@@ -71,7 +71,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.pushButton_histograms_load_2.clicked.connect(self.load_image_for_histogram)
         self.comboBox.currentIndexChanged.connect(self.update_parameters)
         self.pushButton_Normalize_load_3.clicked.connect(self.load_image_for_input_Noise)
-        self.comboBox_2.currentIndexChanged.connect(self.apply_filter)
+        self.comboBox_2.currentIndexChanged.connect(self.apply_LP_filters)
         self.comboBox_3.currentIndexChanged.connect(self.apply_edge_detection)
 
         self.filter_parameters = {"Gaussian": {"KernelSize": 3, "Std": 1},
@@ -368,7 +368,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             # Store the original image for edge detection
             self.original_image = original_image
 
-    def apply_filter(self):
+    def apply_LP_filters(self):
         selected_filter = self.comboBox_2.currentText()
         if hasattr(self, 'noisy_image'):
             filtered_image = self.filter_image(self.noisy_image, selected_filter)
