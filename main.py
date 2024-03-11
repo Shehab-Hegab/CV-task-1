@@ -71,7 +71,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.pushButton_histograms_load_2.clicked.connect(self.load_image_for_histogram)
         self.comboBox.currentIndexChanged.connect(self.update_parameters)
         self.pushButton_Normalize_load_3.clicked.connect(self.load_image_for_input_Noise)
-        self.comboBox_2.currentIndexChanged.connect(self.apply_LP_filters)
+        self.comboBox_2.currentIndexChanged.connect(self.apply_filter_2)
         self.comboBox_3.currentIndexChanged.connect(self.apply_edge_detection)
 
         self.filter_parameters = {"Gaussian": {"KernelSize": 3, "Std": 1},
@@ -262,78 +262,42 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         else:
             pass
 
-    # def show_histogram(self,image,label):
-    #     imgForHistogram=self.rgb2gray(image/255.0)
-    #     imgForHistogram = (imgForHistogram-np.min(imgForHistogram))/(np.max(imgForHistogram)-np.min(imgForHistogram))
-    #     imgForHistogram = (imgForHistogram * 255).astype(np.uint8)
-    #     qimg = QtGui.QImage(imgForHistogram.data, imgForHistogram.shape[1], imgForHistogram.shape[0],imgForHistogram.strides[0], QtGui.QImage.Format_Grayscale8)
-    #     pixmap = QtGui.QPixmap.fromImage(qimg)
-    #     label.setPixmap(pixmap.scaled(label.size()))
-
-    # def rgb2gray(self,rgb):
-    #     return np.dot(rgb[...,:3], [0.2989, 0.5870, 0.1140])
-
-    # def show_histogram(self, image, label):
-    #     # Calculate histogram
-    #     histogram = cv.calcHist([image], [0], None, [256], [0, 256])
-
-    #     # Normalize histogram
-    #     histogram /= np.sum(histogram)
-
-    #     # Plot histogram using Matplotlib
-    #     plt.figure()
-    #     plt.plot(histogram)
-    #     plt.xlabel('Intensity')
-    #     plt.ylabel('Frequency')
-    #     plt.title('Histogram')
-    #     plt.grid(True)
-
-    #     # Convert the plot to a QImage
-    #     plt.savefig('histogram.png')
-    #     hist_image = Image.open('histogram.png')
-    #     hist_image = hist_image.convert('RGB')
-    #     hist_qimage = QImage(hist_image.tobytes(), hist_image.width, hist_image.height, QImage.Format_RGB888)
-
-    #     # Convert QImage to QPixmap and display on the output label
-    #     pixmap = QPixmap.fromImage(hist_qimage)
-    #     label.setPixmap(pixmap.scaled(label.size()))
-
-    def show_histogram(self, image, label):
-        # Calculate histogram for each color channel
-        hist_red = cv.calcHist([image], [0], None, [256], [0, 256])
-        hist_green = cv.calcHist([image], [1], None, [256], [0, 256])
-        hist_blue = cv.calcHist([image], [2], None, [256], [0, 256])
-
-        # Plot histograms using Matplotlib
-        plt.figure()
-        plt.plot(hist_red, color='red')
-        plt.plot(hist_green, color='green')
-        plt.plot(hist_blue, color='blue')
+    def show_histogram(self,image,label):
+        image = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
+        rows,cols=image.shape
+        hist=np.zeros(256)
+        for row in range (rows):
+            for col in range(cols):
+                intensity = int(image[row][col])
+                hist[intensity]+=1
+        plt.figure(figsize =(15, 7))
+        plt.bar(range(256),hist,color='lightblue')
+        plt.xticks(np.arange(0, 256, 10))
         plt.xlabel('Intensity')
         plt.ylabel('Frequency')
         plt.title('Histogram')
-        plt.grid(True)
-
-        # Convert the plot to a QImage
         plt.savefig('histogram.png')
+        plt.grid(True)
         hist_image = Image.open('histogram.png')
-        hist_image = hist_image.convert('RGB')
-        hist_qimage = QImage(hist_image.tobytes(), hist_image.width, hist_image.height, QImage.Format_RGB888)
-
+        hist_image = hist_image.convert("L")
+        hist_qimage = QImage(hist_image.tobytes(), hist_image.width, hist_image.height, QImage.Format_Grayscale8)
         # Convert QImage to QPixmap and display on the output label
         pixmap = QPixmap.fromImage(hist_qimage)
         label.setPixmap(pixmap.scaled(label.size()))
-
+    
+    # This is the code for the 3 rgb channels 
+    
     # def show_histogram(self, image, label):
-    #     # Flatten the image array to a 1D array
-    #     img_flat = image.ravel()
+    #     # Calculate histogram for each color channel
+    #     hist_red = cv.calcHist([image], [0], None, [256], [0, 256])
+    #     hist_green = cv.calcHist([image], [1], None, [256], [0, 256])
+    #     hist_blue = cv.calcHist([image], [2], None, [256], [0, 256])
 
-    #     # Calculate histogram using numpy
-    #     histogram, bins = np.histogram(img_flat, bins=256, range=(0, 256), density=True)
-
-    #     # Plot histogram using Matplotlib
+    #     # Plot histograms using Matplotlib
     #     plt.figure()
-    #     plt.plot(histogram, color='blue')  # Plot histogram in black (grayscale)
+    #     plt.plot(hist_red, color='red')
+    #     plt.plot(hist_green, color='green')
+    #     plt.plot(hist_blue, color='blue')
     #     plt.xlabel('Intensity')
     #     plt.ylabel('Frequency')
     #     plt.title('Histogram')
@@ -348,7 +312,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     #     # Convert QImage to QPixmap and display on the output label
     #     pixmap = QPixmap.fromImage(hist_qimage)
     #     label.setPixmap(pixmap.scaled(label.size()))
-
+    
+        
+        
+        
+    
     def load_image_for_input_Noise(self):
         options = QFileDialog.Options()
         options |= QFileDialog.DontUseNativeDialog
@@ -368,7 +336,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             # Store the original image for edge detection
             self.original_image = original_image
 
-    def apply_LP_filters(self):
+    def apply_filter_2(self):
         selected_filter = self.comboBox_2.currentText()
         if hasattr(self, 'noisy_image'):
             filtered_image = self.filter_image(self.noisy_image, selected_filter)
