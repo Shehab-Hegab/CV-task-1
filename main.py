@@ -299,7 +299,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 intensity = int(image[row][col])
                 hist[intensity] += 1
         plt.figure(figsize=(15, 7))
-        plt.bar(range(256), hist, color='gray')
+        plt.bar(range(256), hist, color='blue')
         plt.xticks(np.arange(0, 256, 10))
         plt.xlabel('Intensity')
         plt.ylabel('Frequency')

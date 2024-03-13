@@ -24,7 +24,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>4</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -117,22 +117,17 @@
          <widget class="QComboBox" name="comboBox">
           <item>
            <property name="text">
-            <string>Gussion</string>
+            <string>-</string>
            </property>
           </item>
           <item>
            <property name="text">
-            <string>Uniform</string>
+            <string>LP-Filter</string>
            </property>
           </item>
           <item>
            <property name="text">
-            <string>Salt</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Pepper-Nois</string>
+            <string>HP-Filter</string>
            </property>
           </item>
          </widget>
@@ -615,22 +610,52 @@ li.checked::marker { content: &quot;\2612&quot;; }
        <enum>QFrame::Box</enum>
       </property>
       <property name="text">
-       <string>Without Noise</string>
+       <string>Edge Detection</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
       </property>
      </widget>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
        <rect>
-        <x>20</x>
-        <y>290</y>
-        <width>191</width>
-        <height>111</height>
+        <x>10</x>
+        <y>300</y>
+        <width>181</width>
+        <height>151</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_4">
+         <item>
+          <widget class="QLabel" name="Noise_label">
+           <property name="text">
+            <string>Noise</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="comboBox_4">
+           <item>
+            <property name="text">
+             <string>Uniform</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Gaussian</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Salt- Pepper</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+        </layout>
+       </item>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_2">
          <item>
