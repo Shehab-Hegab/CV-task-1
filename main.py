@@ -356,7 +356,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if hasattr(self, 'original_image'):
             edge_detected_image = self.detect_edges(self.original_image, selected_edge_detection)
             if edge_detected_image is not None:
-                self.display_image(edge_detected_image, self.label_Normalize_output_3)
+                self.display_image(edge_detected_image, self.label_Normalize_output_6)
             else:
                 print("Error: Invalid edge detection type selected")
 
