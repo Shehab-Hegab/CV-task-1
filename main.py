@@ -1,4 +1,5 @@
 import sys
+from PyQt5 import QtWidgets
 
 import cv2
 from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, QMessageBox, QComboBox
@@ -80,7 +81,22 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                                   "Pepper-Noise": {},
                                   "LP-Filter": {"KernelSize": 3, "Radius": 40},
                                   "HP-Filter": {"KernelSize": 3, "Radius": 40}
+         
+         
                                   }
+        
+        # Connect the load target image button to the function
+        self.pushButton_histograms_load_target_2.clicked.connect(self.load_target_image_for_histogram_matching)
+
+        # Connect the histogram matching and histogram equalization buttons to their respective functions
+        self.radioButton_2.clicked.connect(self.histogramMatching)
+        
+        
+        
+        self.radioButton.clicked.connect(self.histogramEqualization)
+
+
+
 
     def update_parameters(self):
         # Get the selected filter from the combobox
@@ -93,6 +109,23 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.apply_filter(selected_filter, parameters)
         else:
             print("Filter not found in filter parameters dictionary!")
+
+
+
+    def load_target_image_for_histogram_matching(self):
+        options = QFileDialog.Options()
+        options |= QFileDialog.DontUseNativeDialog
+        file_name, _ = QFileDialog.getOpenFileName(self, "Open Target Image File", "",
+                                                   "Image Files (*.png *.jpg *.jpeg *.bmp *.gif)", options=options)
+        if file_name:
+            # Load the target image
+            target_image = cv.imread(file_name)
+            # Display the target image
+            self.display_image(target_image, self.label_histograms_input_3)
+            # Enable the histogram matching button
+            self.pushButton_histogramMatching.setEnabled(True)
+
+
 
     def load_image_for_filtering(self):
         options = QFileDialog.Options()
@@ -319,6 +352,49 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         except Exception as e:
             print("Error loading histogram image:", e)
+
+
+
+
+
+
+
+
+    def histogramMatching(self):
+        global imgForHistogram
+        originalImg = imgForHistogram/255.0
+        originalImg = originalImg.ravel()
+        filename, _ = QtWidgets.QFileDialog.getOpenFileName(self, 'Open file', '', 'Image files (*.jpeg *.jpg *.png)', options=QtWidgets.QFileDialog.DontUseNativeDialog)
+        targetImg = Image.open(filename)
+        targetImg = self.rgb2gray(np.array(targetImg)/255.0)
+        s_values, bin_idx, s_counts = np.unique(originalImg, return_inverse=True,return_counts=True)
+        t_values, t_counts = np.unique(targetImg, return_counts=True)
+        s_quantiles = np.cumsum(s_counts).astype(np.float64)
+        s_quantiles /= s_quantiles[-1]
+        t_quantiles = np.cumsum(t_counts).astype(np.float64)
+        t_quantiles /= t_quantiles[-1]
+        interp_t_values = np.interp(s_quantiles, t_quantiles, t_values)
+        matchImg = interp_t_values[bin_idx].reshape(imgForHistogram.shape)
+        matchImg = (matchImg - np.min(matchImg)) / (np.max(matchImg) - np.min(matchImg))
+        matchImg = (matchImg * 255).astype(np.uint8)
+        self.showImg(matchImg, QtGui.QImage.Format_Grayscale8, self.label_histograms_output)
+        self.graph2Img(matchImg, self.label_histograms_houtput)
+
+    def histogramEqualization(self):
+        self.pushButton_histograms_load_target.setDisabled(True)
+        global imgForHistogram
+        img_eq = imgForHistogram/255.0
+        img_eq = img_eq.flatten()
+        hist, bins = np.histogram(img_eq, 256, density=True)
+        cdf = hist.cumsum()
+        cdf = 255 * cdf / cdf[-1]
+        img_eq = np.interp(img_eq, bins[:-1], cdf)
+        img_eq = img_eq.reshape(imgForHistogram.shape)
+        img_eq = (img_eq - np.min(img_eq)) / (np.max(img_eq) - np.min(img_eq))
+        img_eq = (img_eq * 255).astype(np.uint8)
+        self.showImg(img_eq, QtGui.QImage.Format_Grayscale8, self.label_histograms_output)
+        self.graph2Img(img_eq, self.label_histograms_houtput)
+
 
 
 
