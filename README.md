@@ -52,10 +52,15 @@ Filtering and edge detection
 ####
 Links
 
+
+##normalize
+
+
 https://github.com/lxcnju/histogram_equalization
 
 
-##normalize
+##equalize
+
 
 https://www.pythonpool.com/cv2-normalize/
 
