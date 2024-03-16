@@ -85,16 +85,69 @@ class MainWindow(QMainWindow, Ui_MainWindow):
          
                                   }
         
-        # Connect the load target image button to the function
-        self.pushButton_histograms_load_target_2.clicked.connect(self.load_target_image_for_histogram_matching)
+        self.pushButton_equalize_load_3.clicked.connect(self.load_image_for_equalize)
+        self.pushButton_equalize_3.clicked.connect(self.equalize_image)
 
-        # Connect the histogram matching and histogram equalization buttons to their respective functions
-        self.radioButton_2.clicked.connect(self.histogramMatching)
-        
-        
-        
-        self.radioButton.clicked.connect(self.histogramEqualization)
 
+
+    def load_image_for_equalize(self):
+        # Open file dialog to select an image
+        file_name, _ = QFileDialog.getOpenFileName(self, "Open Image", "", "Image Files (*.png *.jpg *.bmp)")
+
+        # Check if a file is selected
+        if file_name:
+            # Load the image
+            image = cv2.imread(file_name)
+
+            # Convert BGR image to RGB
+            image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
+            # Convert image to QImage
+            height, width, channel = image.shape
+            bytes_per_line = 3 * width
+            q_image = QImage(image.data, width, height, bytes_per_line, QImage.Format_RGB888)
+
+            # Convert QImage to QPixmap
+            pixmap = QPixmap.fromImage(q_image)
+
+            # Set the pixmap to the QLabel
+            self.label_equalize_input_3.setPixmap(pixmap)
+            self.label_equalize_input_3.setScaledContents(True)
+
+    def equalize_image(self):
+        # Retrieve the original image from the label
+        pixmap = self.label_equalize_input_3.pixmap()
+        image = pixmap.toImage()
+
+        # Convert the image to OpenCV format
+        width, height = image.width(), image.height()
+        ptr = image.bits()
+        ptr.setsize(image.byteCount())
+        img = np.array(ptr).reshape(height, width, 4)  # 4 channels for RGBA
+
+        # Convert RGBA to RGB
+        image_rgb = cv2.cvtColor(img, cv2.COLOR_RGBA2RGB)
+
+        # Convert image to grayscale
+        gray_image = cv2.cvtColor(image_rgb, cv2.COLOR_RGB2GRAY)
+
+        # Apply histogram equalization
+        equalized_image = cv2.equalizeHist(gray_image)
+
+        # Convert grayscale to RGB
+        equalized_image_rgb = cv2.cvtColor(equalized_image, cv2.COLOR_GRAY2RGB)
+
+        # Convert image to QImage
+        height, width, channel = equalized_image_rgb.shape
+        bytes_per_line = 3 * width
+        q_image = QImage(equalized_image_rgb.data, width, height, bytes_per_line, QImage.Format_RGB888)
+
+        # Convert QImage to QPixmap
+        pixmap = QPixmap.fromImage(q_image)
+
+        # Set the pixmap to the QLabel
+        self.label_equalize_output_3.setPixmap(pixmap)
+        self.label_equalize_output_3.setScaledContents(True)
 
 
 
@@ -112,19 +165,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 
 
-    def load_target_image_for_histogram_matching(self):
-        options = QFileDialog.Options()
-        options |= QFileDialog.DontUseNativeDialog
-        file_name, _ = QFileDialog.getOpenFileName(self, "Open Target Image File", "",
-                                                   "Image Files (*.png *.jpg *.jpeg *.bmp *.gif)", options=options)
-        if file_name:
-            # Load the target image
-            target_image = cv.imread(file_name)
-            # Display the target image
-            self.display_image(target_image, self.label_histograms_input_3)
-            # Enable the histogram matching button
-            self.pushButton_histogramMatching.setEnabled(True)
-
+    
 
 
     def load_image_for_filtering(self):
@@ -360,40 +401,22 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 
 
-    def histogramMatching(self):
-        global imgForHistogram
-        originalImg = imgForHistogram/255.0
-        originalImg = originalImg.ravel()
-        filename, _ = QtWidgets.QFileDialog.getOpenFileName(self, 'Open file', '', 'Image files (*.jpeg *.jpg *.png)', options=QtWidgets.QFileDialog.DontUseNativeDialog)
-        targetImg = Image.open(filename)
-        targetImg = self.rgb2gray(np.array(targetImg)/255.0)
-        s_values, bin_idx, s_counts = np.unique(originalImg, return_inverse=True,return_counts=True)
-        t_values, t_counts = np.unique(targetImg, return_counts=True)
-        s_quantiles = np.cumsum(s_counts).astype(np.float64)
-        s_quantiles /= s_quantiles[-1]
-        t_quantiles = np.cumsum(t_counts).astype(np.float64)
-        t_quantiles /= t_quantiles[-1]
-        interp_t_values = np.interp(s_quantiles, t_quantiles, t_values)
-        matchImg = interp_t_values[bin_idx].reshape(imgForHistogram.shape)
-        matchImg = (matchImg - np.min(matchImg)) / (np.max(matchImg) - np.min(matchImg))
-        matchImg = (matchImg * 255).astype(np.uint8)
-        self.showImg(matchImg, QtGui.QImage.Format_Grayscale8, self.label_histograms_output)
-        self.graph2Img(matchImg, self.label_histograms_houtput)
+   
 
-    def histogramEqualization(self):
-        self.pushButton_histograms_load_target.setDisabled(True)
-        global imgForHistogram
-        img_eq = imgForHistogram/255.0
-        img_eq = img_eq.flatten()
-        hist, bins = np.histogram(img_eq, 256, density=True)
-        cdf = hist.cumsum()
-        cdf = 255 * cdf / cdf[-1]
-        img_eq = np.interp(img_eq, bins[:-1], cdf)
-        img_eq = img_eq.reshape(imgForHistogram.shape)
-        img_eq = (img_eq - np.min(img_eq)) / (np.max(img_eq) - np.min(img_eq))
-        img_eq = (img_eq * 255).astype(np.uint8)
-        self.showImg(img_eq, QtGui.QImage.Format_Grayscale8, self.label_histograms_output)
-        self.graph2Img(img_eq, self.label_histograms_houtput)
+    # def histogramEqualization(self):
+    #     self.pushButton_histograms_load_target.setDisabled(True)
+    #     global imgForHistogram
+    #     img_eq = imgForHistogram/255.0
+    #     img_eq = img_eq.flatten()
+    #     hist, bins = np.histogram(img_eq, 256, density=True)
+    #     cdf = hist.cumsum()
+    #     cdf = 255 * cdf / cdf[-1]
+    #     img_eq = np.interp(img_eq, bins[:-1], cdf)
+    #     img_eq = img_eq.reshape(imgForHistogram.shape)
+    #     img_eq = (img_eq - np.min(img_eq)) / (np.max(img_eq) - np.min(img_eq))
+    #     img_eq = (img_eq * 255).astype(np.uint8)
+    #     self.showImg(img_eq, QtGui.QImage.Format_Grayscale8, self.label_histograms_output)
+    #     self.graph2Img(img_eq, self.label_histograms_houtput)
 
 
 

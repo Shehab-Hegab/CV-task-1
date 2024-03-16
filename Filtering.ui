@@ -17,14 +17,14 @@
    <widget class="QTabWidget" name="sdfae">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>30</y>
+      <x>30</x>
+      <y>20</y>
       <width>891</width>
       <height>541</height>
      </rect>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>2</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -212,32 +212,6 @@ p, li { white-space: pre-wrap; }
      <attribute name="title">
       <string>Histograms</string>
      </attribute>
-     <widget class="QPushButton" name="pushButton_histograms_load_target_2">
-      <property name="geometry">
-       <rect>
-        <x>80</x>
-        <y>340</y>
-        <width>161</width>
-        <height>71</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Load Target Image</string>
-      </property>
-     </widget>
-     <widget class="QRadioButton" name="radioButton_2">
-      <property name="geometry">
-       <rect>
-        <x>180</x>
-        <y>280</y>
-        <width>112</width>
-        <height>23</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Matching</string>
-      </property>
-     </widget>
      <widget class="QLabel" name="label_histograms_input_2">
       <property name="geometry">
        <rect>
@@ -255,19 +229,6 @@ p, li { white-space: pre-wrap; }
       </property>
       <property name="alignment">
        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-      </property>
-     </widget>
-     <widget class="QRadioButton" name="radioButton">
-      <property name="geometry">
-       <rect>
-        <x>70</x>
-        <y>280</y>
-        <width>112</width>
-        <height>23</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Equalization</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_histograms_hinput_2">
@@ -292,13 +253,44 @@ p, li { white-space: pre-wrap; }
        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
       </property>
      </widget>
-     <widget class="QLabel" name="label_histograms_output">
+     <widget class="QPushButton" name="pushButton_histograms_load_2">
       <property name="geometry">
        <rect>
-        <x>570</x>
-        <y>80</y>
-        <width>261</width>
-        <height>171</height>
+        <x>90</x>
+        <y>190</y>
+        <width>121</width>
+        <height>81</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Load Image</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tab_7">
+     <attribute name="title">
+      <string>equalize</string>
+     </attribute>
+     <widget class="QPushButton" name="pushButton_equalize_load_3">
+      <property name="geometry">
+       <rect>
+        <x>60</x>
+        <y>100</y>
+        <width>121</width>
+        <height>81</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Load Image</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_equalize_output_3">
+      <property name="geometry">
+       <rect>
+        <x>550</x>
+        <y>100</y>
+        <width>271</width>
+        <height>201</height>
        </rect>
       </property>
       <property name="frameShape">
@@ -311,39 +303,36 @@ p, li { white-space: pre-wrap; }
        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
       </property>
      </widget>
-     <widget class="QLabel" name="label_histograms_houtput">
+     <widget class="QLabel" name="label_equalize_input_3">
       <property name="geometry">
        <rect>
-        <x>570</x>
-        <y>260</y>
+        <x>260</x>
+        <y>100</y>
         <width>261</width>
-        <height>191</height>
+        <height>201</height>
        </rect>
       </property>
       <property name="frameShape">
        <enum>QFrame::Box</enum>
       </property>
       <property name="text">
-       <string>Output Histogram</string>
-      </property>
-      <property name="textFormat">
-       <enum>Qt::PlainText</enum>
+       <string>Input Image</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
       </property>
      </widget>
-     <widget class="QPushButton" name="pushButton_histograms_load_2">
+     <widget class="QPushButton" name="pushButton_equalize_3">
       <property name="geometry">
        <rect>
-        <x>90</x>
-        <y>80</y>
+        <x>60</x>
+        <y>200</y>
         <width>121</width>
         <height>81</height>
        </rect>
       </property>
       <property name="text">
-       <string>Load Image</string>
+       <string>equalize</string>
       </property>
      </widget>
     </widget>
