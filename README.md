@@ -16,19 +16,17 @@ Filtering and edge detection
 
 
 
-###########
-###########
-##########
 
 
 
-#####
+
+##
 
 5-Equalize 
 
 ![Screenshot 2024-03-16 042941](https://github.com/Shehab-Hegab/CV-task-1/assets/137138481/a42ff63b-03b3-45a9-9ee0-db379d5b2b5a)
 
-
+##
 6-Normalize the image.
 
 ![Screenshot 2024-03-03 220524](https://github.com/Shehab-Hegab/CV-task-1/assets/137138481/5cd9b602-9b62-4b8d-9830-d33d96bbedf9)
@@ -52,7 +50,7 @@ Filtering and edge detection
 
 
 
-####
+##
 Links
 
 
