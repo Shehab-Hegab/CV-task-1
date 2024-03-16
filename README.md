@@ -32,7 +32,8 @@ Filtering and edge detection
 
 ##equalize 
 
-![Screenshot 2024-03-16 040145](https://github.com/Shehab-Hegab/CV-task-1/assets/137138481/80712863-697d-4d40-b2fd-4cdf9b904165)
+![Screenshot 2024-03-16 042941](https://github.com/Shehab-Hegab/CV-task-1/assets/137138481/6747c656-17e4-483e-ab01-d934d49bb5d5)
+
 
 
 
