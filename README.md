@@ -47,8 +47,12 @@ Filtering and edge detection
 
 
 
+
+
 ####
 Links
+
+https://github.com/lxcnju/histogram_equalization
 
 
 ##normalize
