@@ -55,7 +55,15 @@ LP Filters
 ##
 
 
+Thresholding 
 
+![WhatsApp Image 2024-03-17 at 23 24 58_c9cbac60](https://github.com/sbme-tutorials/final_project-database_s23_icu16/assets/137138481/418dd656-eff7-4da6-8a6c-e524ca3b4320)
+
+##
+
+![WhatsApp Image 2024-03-17 at 23 24 58_aabc8477](https://github.com/sbme-tutorials/final_project-database_s23_icu16/assets/137138481/6f336bbd-f1a7-42db-a5c7-e2b4d24665aa)
+
+##
 
 
 
