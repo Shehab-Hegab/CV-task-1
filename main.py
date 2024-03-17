@@ -1,8 +1,8 @@
 import sys
-from PyQt5 import QtWidgets
 
 import cv2
-from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, QMessageBox, QComboBox
+from PyQt5 import QtWidgets
+from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, QMessageBox, QComboBox,QVBoxLayout
 from PyQt5.QtGui import QPixmap, QImage
 from PyQt5 import QtGui, QtCore
 from PyQt5.uic import loadUi
@@ -11,36 +11,23 @@ import cv2 as cv
 from Filtering import Ui_MainWindow
 from PIL import Image
 from matplotlib import pyplot as plt
-
-# Additive Noise:
-
+import pyqtgraph as pg
+# Noise functions
 def uniform_noise(img, var=100):
     uniform_noise = np.random.randint(0, var, img.shape)
-    new_image = img + uniform_noise
-    new_image = np.clip(new_image, 0, 255)
-    new_image = new_image.astype(np.uint8)
-    if len(new_image.shape) == 3:
-        plt.imsave("noisy.jpg",new_image)
-    else:
-        plt.imsave("noisy.jpg", new_image, cmap='gray')
+    new_image = np.clip(img + uniform_noise, 0, 255).astype(np.uint8)
+    save_noisy_image(new_image)
     return new_image
 
 def gaussian_noise(img, var=50):
     mean = 0
     gaussian_noise = np.random.normal(mean, var, img.shape)
     gaussian_noise.round()
-    new_image = img + gaussian_noise
-    new_image = np.clip(new_image, 0, 255)
-    new_image = new_image.astype(np.uint8)
-    if len(new_image.shape) == 3:
-        plt.imsave("noisy.jpg",new_image)
-    else:
-        plt.imsave("noisy.jpg", new_image, cmap='gray')
+    new_image = np.clip(img + gaussian_noise, 0, 255).astype(np.uint8)
+    save_noisy_image(new_image)
     return new_image
 
 def salt_pepper_noise(img, density=None):
-
-    # Check if the image is RGB and convert it to gray scale
     if len(img.shape) == 3:
         gray_img = np.mean(img, axis=2)
     else:
@@ -48,7 +35,7 @@ def salt_pepper_noise(img, density=None):
 
     rows, cols = gray_img.shape
 
-    if density == None:
+    if density is None:
         density = np.random.uniform(0, 1)
     pixels_number = rows * cols
     noise_pixels = int(density * pixels_number)
@@ -65,16 +52,17 @@ def salt_pepper_noise(img, density=None):
         col = np.random.randint(0, cols - 1)
         gray_img[row][col] = 0
 
-    gray_img = gray_img.astype(np.uint8)
-    if len(gray_img.shape) == 3:
-        plt.imsave("noisy.jpg",gray_img)
+    noisy_img = gray_img.astype(np.uint8)
+    save_noisy_image(noisy_img)
+    return noisy_img
+
+def save_noisy_image(img):
+    if len(img.shape) == 3:
+        plt.imsave("noisy.jpg", img)
     else:
-        plt.imsave("noisy.jpg", gray_img, cmap='gray')
-    return gray_img
-
+        plt.imsave("noisy.jpg", img, cmap='gray')
+        
 class MainWindow(QMainWindow, Ui_MainWindow):
-
-
     def __init__(self):
         super(MainWindow, self).__init__()
         self.setupUi(self)
@@ -87,86 +75,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.pushButton_histograms_load_2.clicked.connect(self.load_image_for_histogram)
         self.comboBox.currentIndexChanged.connect(self.update_parameters)
         self.pushButton_Normalize_load_3.clicked.connect(self.apply_noise)
-        self.comboBox_4.currentIndexChanged.connect(self.noise_combobox)
         self.comboBox_2.currentIndexChanged.connect(self.apply_LP_filters)
         self.comboBox_3.currentIndexChanged.connect(self.apply_edge_detection)
-
+        self.comboBox_4.currentIndexChanged.connect(self.noise_combobox)
         self.filter_parameters = {"Gaussian": {"KernelSize": 3, "Std": 1},
                                   "Uniform": {"KernelSize": 3},
                                   "Salt": {},
                                   "Pepper-Noise": {},
                                   "LP-Filter": {"KernelSize": 3, "Radius": 40},
                                   "HP-Filter": {"KernelSize": 3, "Radius": 40}
-         
-         
                                   }
-        
-        self.pushButton_equalize_load_3.clicked.connect(self.load_image_for_equalize)
-        self.pushButton_equalize_3.clicked.connect(self.equalize_image)
-
-
-
-    def load_image_for_equalize(self):
-        # Open file dialog to select an image
-        file_name, _ = QFileDialog.getOpenFileName(self, "Open Image", "", "Image Files (*.png *.jpg *.bmp)")
-
-        # Check if a file is selected
-        if file_name:
-            # Load the image
-            image = cv2.imread(file_name)
-
-            # Convert BGR image to RGB
-            image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-
-            # Convert image to QImage
-            height, width, channel = image.shape
-            bytes_per_line = 3 * width
-            q_image = QImage(image.data, width, height, bytes_per_line, QImage.Format_RGB888)
-
-            # Convert QImage to QPixmap
-            pixmap = QPixmap.fromImage(q_image)
-
-            # Set the pixmap to the QLabel
-            self.label_equalize_input_3.setPixmap(pixmap)
-            self.label_equalize_input_3.setScaledContents(True)
-
-    def equalize_image(self):
-        # Retrieve the original image from the label
-        pixmap = self.label_equalize_input_3.pixmap()
-        image = pixmap.toImage()
-
-        # Convert the image to OpenCV format
-        width, height = image.width(), image.height()
-        ptr = image.bits()
-        ptr.setsize(image.byteCount())
-        img = np.array(ptr).reshape(height, width, 4)  # 4 channels for RGBA
-
-        # Convert RGBA to RGB
-        image_rgb = cv2.cvtColor(img, cv2.COLOR_RGBA2RGB)
-
-        # Convert image to grayscale
-        gray_image = cv2.cvtColor(image_rgb, cv2.COLOR_RGB2GRAY)
-
-        # Apply histogram equalization
-        equalized_image = cv2.equalizeHist(gray_image)
-
-        # Convert grayscale to RGB
-        equalized_image_rgb = cv2.cvtColor(equalized_image, cv2.COLOR_GRAY2RGB)
-
-        # Convert image to QImage
-        height, width, channel = equalized_image_rgb.shape
-        bytes_per_line = 3 * width
-        q_image = QImage(equalized_image_rgb.data, width, height, bytes_per_line, QImage.Format_RGB888)
-
-        # Convert QImage to QPixmap
-        pixmap = QPixmap.fromImage(q_image)
-
-        # Set the pixmap to the QLabel
-        self.label_equalize_output_3.setPixmap(pixmap)
-        self.label_equalize_output_3.setScaledContents(True)
-
-
-
     def update_parameters(self):
         # Get the selected filter from the combobox
         selected_filter = self.comboBox.currentText()
@@ -178,11 +96,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.apply_filter(selected_filter, parameters)
         else:
             print("Filter not found in filter parameters dictionary!")
-
-
-
-    
-
 
     def load_image_for_filtering(self):
         options = QFileDialog.Options()
@@ -226,7 +139,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             # Load the image using OpenCV
             image = cv.imread(file_name)
             # print(image)
-            self.show_histogram(image, self.label_histograms_hinput_2)
+            self.show_histogram(image, self.red_histogram,self.green_histogram,self.blue_histogram,self.red_cdf,self.green_cdf,self.blue_cdf)
 
     def normalize_image_and_display(self):
         # Check if an image has been loaded
@@ -352,91 +265,73 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         else:
             pass
 
-
     #  here is the method for 3 color channels
-    # def show_histogram(self, image, label):
-    #     # Calculate histogram for each color channel
-    #     hist_red = cv.calcHist([image], [0], None, [256], [0, 256])
-    #     hist_green = cv.calcHist([image], [1], None, [256], [0, 256])
-    #     hist_blue = cv.calcHist([image], [2], None, [256], [0, 256])
+    def plot_histogram(self, hist, title, color):
+        
+        hist_values = hist.flatten().tolist()  # Flatten and convert histogram values to list
+        bins = np.arange(len(hist_values)).tolist() # Generate bins based on the length of hist_values
+        
+        plt = pg.PlotWidget(title=title)
+        plt.plot(bins, hist_values, fillLevel=0, brush=color, stepMode=False)
+        # plt.setLabel('left', 'Frequency')
+        # plt.setLabel('bottom', 'Intensity')
+        plt.setSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, 
+            QtWidgets.QSizePolicy.Expanding
+        )
+        return plt
 
-    #     # Plot histograms using Matplotlib
-    #     plt.figure()
-    #     plt.plot(hist_red, color='red')
-    #     plt.plot(hist_green, color='green')
-    #     plt.plot(hist_blue, color='blue')
-    #     plt.xlabel('Intensity')
-    #     plt.ylabel('Frequency')
-    #     plt.title('Histogram')
-    #     plt.grid(True)
+    def show_histogram(self, image, label_red, label_green, label_blue, label_red_cdf, label_green_cdf, label_blue_cdf):
+        # Calculate histogram for each color channel
+        hist_red = cv.calcHist([image], [0], None, [256], [0, 256])
+        hist_green = cv.calcHist([image], [1], None, [256], [0, 256])
+        hist_blue = cv.calcHist([image], [2], None, [256], [0, 256])
 
-    #     # Convert the plot to a QImage
-    #     plt.savefig('histogram.png')
-    #     hist_image = Image.open('histogram.png')
-    #     hist_image = hist_image.convert('RGB')
-    #     hist_qimage = QImage(hist_image.tobytes(), hist_image.width, hist_image.height, QImage.Format_RGB888)
+        # Clear labels
+        label_red.clear()
+        label_green.clear()
+        label_blue.clear()
+        label_red_cdf.clear()
+        label_green_cdf.clear()
+        label_blue_cdf.clear()
 
-    #     # Convert QImage to QPixmap and display on the output label
-    #     pixmap = QPixmap.fromImage(hist_qimage)
-    #     label.setPixmap(pixmap.scaled(label.size()))
+        # Plot histograms
+        plot_red = self.plot_histogram(hist_red, 'Red Histogram', (255, 0, 0, 150))
+        plot_green = self.plot_histogram(hist_green, 'Green Histogram', (0, 255, 0, 150))
+        plot_blue = self.plot_histogram(hist_blue, 'Blue Histogram', (0, 0, 255, 150))
 
-    def show_histogram(self, image, label):
-        image = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
-        rows, cols = image.shape
-        hist = np.zeros(256)
-        for row in range(rows):
-            for col in range(cols):
-                intensity = int(image[row][col])
-                hist[intensity] += 1
-        plt.figure(figsize=(15, 7))
-        plt.bar(range(256), hist, color='blue')
-        plt.xticks(np.arange(0, 256, 10))
-        plt.xlabel('Intensity')
-        plt.ylabel('Frequency')
-        plt.title('Histogram')
-        plt.grid(True)
-        plt.savefig('histogram.png')
+        # Plot cumulative histograms
+        cumulative_hist_red = np.cumsum(hist_red.flatten())
+        cumulative_hist_green = np.cumsum(hist_green.flatten())
+        cumulative_hist_blue = np.cumsum(hist_blue.flatten())
+        plot_red_cdf = self.plot_histogram(cumulative_hist_red, 'Red Channel CDF', (255, 0, 0, 150))
+        plot_green_cdf = self.plot_histogram(cumulative_hist_green, 'Green Channel CDF', (0, 255, 0, 150))
+        plot_blue_cdf = self.plot_histogram(cumulative_hist_blue, 'Blue Channel CDF', (0, 0, 255, 150))
 
-        try:
-            # Open the saved histogram image
-            hist_image = Image.open('histogram.png')
-            hist_image = hist_image.convert('L')  # Convert to grayscale
-            hist_qimage = QImage(hist_image.tobytes(), hist_image.width, hist_image.height, QImage.Format_Grayscale8)
+        # Add plots to labels
+        layout_red = QtWidgets.QVBoxLayout()
+        layout_red.addWidget(plot_red)
+        label_red.setLayout(layout_red)
 
-            # Convert QImage to QPixmap and display on the output label
-            pixmap = QPixmap.fromImage(hist_qimage)
-            label.setPixmap(pixmap.scaled(label.size()))
+        layout_green = QtWidgets.QVBoxLayout()
+        layout_green.addWidget(plot_green)
+        label_green.setLayout(layout_green)
 
-        except Exception as e:
-            print("Error loading histogram image:", e)
+        layout_blue = QtWidgets.QVBoxLayout()
+        layout_blue.addWidget(plot_blue)
+        label_blue.setLayout(layout_blue)
 
+        layout_red_cdf = QtWidgets.QVBoxLayout()
+        layout_red_cdf.addWidget(plot_red_cdf)
+        label_red_cdf.setLayout(layout_red_cdf)
 
+        layout_green_cdf = QtWidgets.QVBoxLayout()
+        layout_green_cdf.addWidget(plot_green_cdf)
+        label_green_cdf.setLayout(layout_green_cdf)
 
-
-
-
-
-
-   
-
-    # def histogramEqualization(self):
-    #     self.pushButton_histograms_load_target.setDisabled(True)
-    #     global imgForHistogram
-    #     img_eq = imgForHistogram/255.0
-    #     img_eq = img_eq.flatten()
-    #     hist, bins = np.histogram(img_eq, 256, density=True)
-    #     cdf = hist.cumsum()
-    #     cdf = 255 * cdf / cdf[-1]
-    #     img_eq = np.interp(img_eq, bins[:-1], cdf)
-    #     img_eq = img_eq.reshape(imgForHistogram.shape)
-    #     img_eq = (img_eq - np.min(img_eq)) / (np.max(img_eq) - np.min(img_eq))
-    #     img_eq = (img_eq * 255).astype(np.uint8)
-    #     self.showImg(img_eq, QtGui.QImage.Format_Grayscale8, self.label_histograms_output)
-    #     self.graph2Img(img_eq, self.label_histograms_houtput)
-
-
-
-
+        layout_blue_cdf = QtWidgets.QVBoxLayout()
+        layout_blue_cdf.addWidget(plot_blue_cdf)
+        label_blue_cdf.setLayout(layout_blue_cdf)
 
     def load_image_for_input_Noise(self):
         options = QFileDialog.Options()
@@ -456,24 +351,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.noisy_image = noisy_image
             # Store the original image for edge detection
             self.original_image = original_image
-    # def load_image_for_input_Noise(self):
-    #     options = QFileDialog.Options()
-    #     options |= QFileDialog.DontUseNativeDialog
-    #     file_name, _ = QFileDialog.getOpenFileName(self, "Open Image File", "",
-    #                                                "Image Files (*.png *.jpg *.jpeg *.bmp *.gif)", options=options)
-    #     if file_name:
-    #         # Load the original image
-    #         original_image = cv2.imread(file_name)
-    #         # Display the original image in label_Normalize_input_3
-    #         self.display_image(original_image, self.label_Normalize_input_3)
-    #         # Add noise to the image
-    #         noisy_image = self.add_noise(original_image)
-    #         # Display the noisy image in label_Normalize_output_4
-    #         self.display_image(noisy_image, self.label_Normalize_output_4)
-    #         # Store the noisy image for filtering
-    #         self.noisy_image = noisy_image
-    #         # Store the original image for edge detection
-    #         self.original_image = original_image
 
     def apply_LP_filters(self):
         selected_filter = self.comboBox_2.currentText()
@@ -483,15 +360,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 self.display_image(filtered_image, self.label_Normalize_output_3)
             else:
                 print("Error: Invalid filter type selected")
-
-    def apply_edge_detection(self):
-        selected_edge_detection = self.comboBox_3.currentText()
-        if hasattr(self, 'original_image'):
-            edge_detected_image = self.detect_edges(self.original_image, selected_edge_detection)
-            if edge_detected_image is not None:
-                self.display_image(edge_detected_image, self.label_Normalize_output_6)
-            else:
-                print("Error: Invalid edge detection type selected")
 
     def noise_combobox(self):
         selected_noise= self.comboBox_4.currentText()
@@ -533,9 +401,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 self.noisy_image = noisy_image_test
                 self.original_image = original_image
                 self.to_noise_img = img_test
-                
-            
-        return None
+
+    def apply_edge_detection(self):
+        selected_edge_detection = self.comboBox_3.currentText()
+        if hasattr(self, 'original_image'):
+            edge_detected_image = self.detect_edges(self.original_image, selected_edge_detection)
+            if edge_detected_image is not None:
+                self.display_image(edge_detected_image, self.label_Normalize_output_6)
+            else:
+                print("Error: Invalid edge detection type selected")
 
     def detect_edges(self, image, edge_detection_type):
         if edge_detection_type == "Sobel":
@@ -572,14 +446,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         else:
             print("Error: Invalid filter type selected")
             return None
-
-    # def add_noise(self, image):
-    #     mean = 0
-    #     stddev = 50  # Increase the standard deviation for more noise
-    #     h, w, c = image.shape
-    #     noise = np.random.normal(mean, stddev, (h, w, c)).astype(np.uint8)
-    #     noisy_image = cv2.add(image, noise)
-    #     return noisy_image
 
     def display_image(self, image, label):
         if len(image.shape) == 3:  # RGB image
