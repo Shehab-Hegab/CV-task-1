@@ -75,6 +75,21 @@ Hybrid
 
 
 ##
+
+Noise 
+
+
+![WhatsApp Image 2024-03-18 at 00 02 19_7d8aa499](https://github.com/sbme-tutorials/final_project-database_s23_icu16/assets/137138481/ca6298b5-51a3-41ed-b474-286c4ce8b9d3)
+##
+
+![WhatsApp Image 2024-03-18 at 00 02 19_141c694a](https://github.com/sbme-tutorials/final_project-database_s23_icu16/assets/137138481/5cc2ea06-ccba-4439-ab5b-53f1012be6b6)
+
+##
+
+![WhatsApp Image 2024-03-18 at 00 02 18_3e07cf1f](https://github.com/sbme-tutorials/final_project-database_s23_icu16/assets/137138481/6f65c6fa-df9b-4067-93a9-dd702aacfb51)
+
+
+##
 Links
 
 
