@@ -113,3 +113,9 @@ FIlters
 https://stackoverflow.com/questions/66935821/how-to-apply-a-lpf-and-hpf-to-a-fft-fourier-transform
 
 
+## 
+Noise 
+
+https://towardsdatascience.com/image-filters-in-python-26ee938e57d2
+
+
