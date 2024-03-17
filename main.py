@@ -12,53 +12,68 @@ from Filtering import Ui_MainWindow
 from PIL import Image
 from matplotlib import pyplot as plt
 
+# Additive Noise:
+
+def uniform_noise(img, var=100):
+    uniform_noise = np.random.randint(0, var, img.shape)
+    new_image = img + uniform_noise
+    new_image = np.clip(new_image, 0, 255)
+    new_image = new_image.astype(np.uint8)
+    if len(new_image.shape) == 3:
+        plt.imsave("noisy.jpg",new_image)
+    else:
+        plt.imsave("noisy.jpg", new_image, cmap='gray')
+    return new_image
+
+def gaussian_noise(img, var=50):
+    mean = 0
+    gaussian_noise = np.random.normal(mean, var, img.shape)
+    gaussian_noise.round()
+    new_image = img + gaussian_noise
+    new_image = np.clip(new_image, 0, 255)
+    new_image = new_image.astype(np.uint8)
+    if len(new_image.shape) == 3:
+        plt.imsave("noisy.jpg",new_image)
+    else:
+        plt.imsave("noisy.jpg", new_image, cmap='gray')
+    return new_image
+
+def salt_pepper_noise(img, density=None):
+
+    # Check if the image is RGB and convert it to gray scale
+    if len(img.shape) == 3:
+        gray_img = np.mean(img, axis=2)
+    else:
+        gray_img = img
+
+    rows, cols = gray_img.shape
+
+    if density == None:
+        density = np.random.uniform(0, 1)
+    pixels_number = rows * cols
+    noise_pixels = int(density * pixels_number)
+
+    salt_noise = np.random.randint(0, noise_pixels)
+    pepper_noise = noise_pixels - salt_noise
+
+    for i in range(salt_noise):
+        row = np.random.randint(0, rows - 1)
+        col = np.random.randint(0, cols - 1)
+        gray_img[row][col] = 255
+    for i in range(pepper_noise):
+        row = np.random.randint(0, rows - 1)
+        col = np.random.randint(0, cols - 1)
+        gray_img[row][col] = 0
+
+    gray_img = gray_img.astype(np.uint8)
+    if len(gray_img.shape) == 3:
+        plt.imsave("noisy.jpg",gray_img)
+    else:
+        plt.imsave("noisy.jpg", gray_img, cmap='gray')
+    return gray_img
 
 class MainWindow(QMainWindow, Ui_MainWindow):
 
-    # Additive Noise:
-
-    def uniform_noise(img, var):
-        uniform_noise = np.random.randint(0, var, img.shape)
-        new_image = img + uniform_noise
-        new_image = np.clip(new_image, 0, 255)
-        return new_image
-
-    def gaussian_noise(img, var):
-        mean = 0
-        gaussian_noise = np.random.normal(mean, var, img.shape)
-        gaussian_noise.round()
-        new_image = img + gaussian_noise
-        new_image = np.clip(new_image, 0, 255)
-        return new_image
-
-    def salt_pepper_noise(img, density=None):
-
-        # Check if the image is RGB and convert it to gray scale
-        if len(img.shape) == 3:
-            gray_img = np.mean(img, axis=2)
-        else:
-            gray_img = img
-
-        rows, cols = gray_img.shape
-
-        if density == None:
-            density = np.random.uniform(0, 1)
-        pixels_number = rows * cols
-        noise_pixels = int(density * pixels_number)
-
-        salt_noise = np.random.randint(0, noise_pixels)
-        pepper_noise = noise_pixels - salt_noise
-
-        for i in range(salt_noise):
-            row = np.random.randint(0, rows - 1)
-            col = np.random.randint(0, cols - 1)
-            gray_img[row][col] = 255
-        for i in range(pepper_noise):
-            row = np.random.randint(0, rows - 1)
-            col = np.random.randint(0, cols - 1)
-            gray_img[row][col] = 0
-
-        return gray_img
 
     def __init__(self):
         super(MainWindow, self).__init__()
@@ -71,7 +86,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.pushButton_Normalize_2.clicked.connect(self.normalize_image_and_display)
         self.pushButton_histograms_load_2.clicked.connect(self.load_image_for_histogram)
         self.comboBox.currentIndexChanged.connect(self.update_parameters)
-        self.pushButton_Normalize_load_3.clicked.connect(self.load_image_for_input_Noise)
+        self.pushButton_Normalize_load_3.clicked.connect(self.apply_noise)
+        self.comboBox_4.currentIndexChanged.connect(self.noise_combobox)
         self.comboBox_2.currentIndexChanged.connect(self.apply_LP_filters)
         self.comboBox_3.currentIndexChanged.connect(self.apply_edge_detection)
 
@@ -440,6 +456,24 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.noisy_image = noisy_image
             # Store the original image for edge detection
             self.original_image = original_image
+    # def load_image_for_input_Noise(self):
+    #     options = QFileDialog.Options()
+    #     options |= QFileDialog.DontUseNativeDialog
+    #     file_name, _ = QFileDialog.getOpenFileName(self, "Open Image File", "",
+    #                                                "Image Files (*.png *.jpg *.jpeg *.bmp *.gif)", options=options)
+    #     if file_name:
+    #         # Load the original image
+    #         original_image = cv2.imread(file_name)
+    #         # Display the original image in label_Normalize_input_3
+    #         self.display_image(original_image, self.label_Normalize_input_3)
+    #         # Add noise to the image
+    #         noisy_image = self.add_noise(original_image)
+    #         # Display the noisy image in label_Normalize_output_4
+    #         self.display_image(noisy_image, self.label_Normalize_output_4)
+    #         # Store the noisy image for filtering
+    #         self.noisy_image = noisy_image
+    #         # Store the original image for edge detection
+    #         self.original_image = original_image
 
     def apply_LP_filters(self):
         selected_filter = self.comboBox_2.currentText()
@@ -458,6 +492,50 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 self.display_image(edge_detected_image, self.label_Normalize_output_6)
             else:
                 print("Error: Invalid edge detection type selected")
+
+    def noise_combobox(self):
+        selected_noise= self.comboBox_4.currentText()
+        if hasattr(self, 'to_noise_img'):
+            img = self.to_noise_img
+            if selected_noise == "Gaussian":
+                noisy_image=gaussian_noise(img)
+            elif selected_noise == "Uniform":
+                noisy_image= uniform_noise(img)
+            elif selected_noise == "Salt- Pepper":
+                noisy_image=salt_pepper_noise(img)
+            if noisy_image is not None:
+                noisy_image_display=cv2.imread("noisy.jpg")    
+                self.display_image(noisy_image_display, self.label_Normalize_output_4)
+                self.noisy_image = noisy_image_display
+
+    def apply_noise(self):
+        options = QFileDialog.Options()
+        options |= QFileDialog.DontUseNativeDialog
+        file_name, _ = QFileDialog.getOpenFileName(self, "Open Image File", "",
+                                                   "Image Files (*.png *.jpg *.jpeg *.bmp *.gif)", options=options)
+        if file_name:
+            # Load the original image
+            original_image = cv2.imread(file_name)
+
+            img_test = np.array(Image.open(file_name))
+            # Display the original image in label_Normalize_input_3
+            self.display_image(original_image, self.label_Normalize_input_3)
+            selected_noise= self.comboBox_4.currentText()
+            if selected_noise == "Gaussian":
+                noisy_image=gaussian_noise(img_test)
+            elif selected_noise == "Uniform":
+                noisy_image= uniform_noise(img_test)
+            elif selected_noise == "Salt- Pepper":
+                noisy_image=salt_pepper_noise(img_test)
+            if noisy_image is not None:
+                noisy_image_test=cv2.imread("noisy.jpg")    
+                self.display_image(noisy_image_test, self.label_Normalize_output_4)
+                self.noisy_image = noisy_image_test
+                self.original_image = original_image
+                self.to_noise_img = img_test
+                
+            
+        return None
 
     def detect_edges(self, image, edge_detection_type):
         if edge_detection_type == "Sobel":
@@ -495,13 +573,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             print("Error: Invalid filter type selected")
             return None
 
-    def add_noise(self, image):
-        mean = 0
-        stddev = 50  # Increase the standard deviation for more noise
-        h, w, c = image.shape
-        noise = np.random.normal(mean, stddev, (h, w, c)).astype(np.uint8)
-        noisy_image = cv2.add(image, noise)
-        return noisy_image
+    # def add_noise(self, image):
+    #     mean = 0
+    #     stddev = 50  # Increase the standard deviation for more noise
+    #     h, w, c = image.shape
+    #     noise = np.random.normal(mean, stddev, (h, w, c)).astype(np.uint8)
+    #     noisy_image = cv2.add(image, noise)
+    #     return noisy_image
 
     def display_image(self, image, label):
         if len(image.shape) == 3:  # RGB image
