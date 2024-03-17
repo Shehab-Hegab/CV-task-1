@@ -30,7 +30,8 @@ Team members:
 ##
 6-Normalize the image.
 
-![Screenshot 2024-03-03 220524](https://github.com/Shehab-Hegab/CV-task-1/assets/137138481/5cd9b602-9b62-4b8d-9830-d33d96bbedf9)
+![Screenshot 2024-03-17 231239](https://github.com/Shehab-Hegab/CV-task-1/assets/137138481/8138f539-dc25-4ab9-b257-7854ae1ac234)
+
 
 
 
