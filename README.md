@@ -28,7 +28,7 @@ Equalize
 ![Screenshot 2024-03-16 042941](https://github.com/Shehab-Hegab/CV-task-1/assets/137138481/a42ff63b-03b3-45a9-9ee0-db379d5b2b5a)
 
 ##
-Normalize the image.
+Normalize
 
 ![Screenshot 2024-03-17 231239](https://github.com/Shehab-Hegab/CV-task-1/assets/137138481/8138f539-dc25-4ab9-b257-7854ae1ac234)
 
