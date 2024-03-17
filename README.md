@@ -23,17 +23,36 @@ Team members:
 
 ##
 
-5-Equalize 
+Equalize 
 
 ![Screenshot 2024-03-16 042941](https://github.com/Shehab-Hegab/CV-task-1/assets/137138481/a42ff63b-03b3-45a9-9ee0-db379d5b2b5a)
 
 ##
-6-Normalize the image.
+Normalize the image.
 
 ![Screenshot 2024-03-17 231239](https://github.com/Shehab-Hegab/CV-task-1/assets/137138481/8138f539-dc25-4ab9-b257-7854ae1ac234)
 
 
 
+##
+Histograms
+
+![Histogram](https://github.com/sbme-tutorials/final_project-database_s23_icu16/assets/137138481/4347c5fc-d18e-4f3b-bc43-262eab4c73f6)
+
+##
+
+HP Filters
+
+![HP radius 20](https://github.com/sbme-tutorials/final_project-database_s23_icu16/assets/137138481/87b2df8f-6727-48ea-8721-ede4d614c737)
+
+
+##
+LP Filters
+
+![LP radius 40](https://github.com/sbme-tutorials/final_project-database_s23_icu16/assets/137138481/b5c0fd12-0946-482f-94b0-a09fedaa6fb9)
+
+
+##
 
 
 
