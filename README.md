@@ -37,11 +37,13 @@ Normalize
 ##
 Histograms
 
+
 ![Histogram](https://github.com/sbme-tutorials/final_project-database_s23_icu16/assets/137138481/4347c5fc-d18e-4f3b-bc43-262eab4c73f6)
 
 ##
 
 HP Filters
+
 
 ![HP radius 20](https://github.com/sbme-tutorials/final_project-database_s23_icu16/assets/137138481/87b2df8f-6727-48ea-8721-ede4d614c737)
 
