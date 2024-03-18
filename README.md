@@ -118,4 +118,9 @@ Noise
 
 https://towardsdatascience.com/image-filters-in-python-26ee938e57d2
 
+##
+Edged
 
+https://neptune.ai/blog/image-processing-python
+
+https://thepythoncode.com/article/canny-edge-detection-opencv-python
