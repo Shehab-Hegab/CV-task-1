@@ -108,10 +108,12 @@ https://github.com/lxcnju/histogram_equalization
 
 ## 
 Histogram 
+
 https://levelup.gitconnected.com/introduction-to-histogram-equalization-for-digital-image-enhancement-420696db9e43
 
 ##
 FIlters 
+
 https://stackoverflow.com/questions/66935821/how-to-apply-a-lpf-and-hpf-to-a-fft-fourier-transform
 
 
