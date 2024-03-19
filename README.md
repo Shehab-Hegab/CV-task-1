@@ -131,3 +131,14 @@ Edged
 https://neptune.ai/blog/image-processing-python
 
 https://thepythoncode.com/article/canny-edge-detection-opencv-python
+
+##
+Gaussian Noise
+
+https://medium.com/@anishaswain/noise-in-digital-image-processing-55357c9fab71#:~:text=Gaussian%20Noise%20is%20a%20statistical,arises%20in%20amplifiers%20or%20detectors
+
+##
+Uniform noise
+
+https://www.futurelearn.com/info/courses/introduction-to-image-analysis-for-plant-phenotyping/0/steps/297750#:~:text=View%20Course-,Uniform,-noise
+
