@@ -1,6 +1,9 @@
 # CV-task-1
 Filtering and edge detection
 
+##
+
+Team-9
 
 ##
 Team members:
